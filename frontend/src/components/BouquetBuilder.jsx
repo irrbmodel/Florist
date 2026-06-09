@@ -1,7 +1,218 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Check, ArrowRight, RotateCcw, ShoppingBag, Heart } from 'lucide-react';
-import { useSound } from '../hooks/useSound';
+// Custom animated SVG composite representing the client's current florist selections
+const BouquetGraphic = ({ mood, blooms, wrap }) => {
+  const moodColor = mood?.accentColor || '#C5A880';
+  
+  return (
+    <svg viewBox="0 0 400 400" className="w-full h-full">
+      <defs>
+        <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={mood ? `${moodColor}33` : 'rgba(197, 168, 128, 0.15)'} />
+          <stop offset="100%" stopColor="transparent" />
+        </radialGradient>
+      </defs>
+      <rect width="400" height="400" fill="url(#glow)" rx="12" />
+
+      {/* Stem Lines */}
+      {blooms.length > 0 && (
+        <g opacity="0.85">
+          {blooms.map((bloom, index) => {
+            const targetX = [160, 200, 240][index % 3];
+            const targetY = [155, 120, 165][index % 3];
+            return (
+              <motion.path
+                key={`stem-${bloom.id}`}
+                d={`M ${targetX} ${targetY} Q ${(200 + targetX) / 2} 250 200 310`}
+                stroke="#5B6D56"
+                strokeWidth="4"
+                strokeLinecap="round"
+                fill="none"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.7, ease: 'easeOut' }}
+              />
+            );
+          })}
+          {/* General foliage stems */}
+          <motion.path
+            d="M 140 180 Q 170 260 200 310"
+            stroke="#7C8D78"
+            strokeWidth="3"
+            strokeLinecap="round"
+            fill="none"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+          />
+          <motion.path
+            d="M 260 180 Q 230 260 200 310"
+            stroke="#7C8D78"
+            strokeWidth="3"
+            strokeLinecap="round"
+            fill="none"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+          />
+        </g>
+      )}
+
+      {/* Stems Foliage Leaves */}
+      {blooms.map((bloom, index) => {
+        const targetX = [160, 200, 240][index % 3];
+        const targetY = [155, 120, 165][index % 3];
+        const midX = (200 + targetX) / 2;
+        
+        return (
+          <g key={`leaves-${bloom.id}`}>
+            <motion.path
+              d={`M ${midX - 8} 210 Q ${midX - 22} 200 ${midX - 18} 190 Q ${midX} 200 ${midX - 8} 210`}
+              fill="#7C8D78"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.15 }}
+            />
+            <motion.path
+              d={`M ${midX + 8} 230 Q ${midX + 22} 220 ${midX + 18} 210 Q ${midX} 220 ${midX + 8} 230`}
+              fill="#7C8D78"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.25 }}
+            />
+          </g>
+        );
+      })}
+
+      {/* Flowers Layer */}
+      {blooms.map((bloom, index) => {
+        const targetX = [160, 200, 240][index % 3];
+        const targetY = [155, 120, 165][index % 3];
+
+        return (
+          <motion.g
+            key={`bloom-graphic-${bloom.id}-${index}`}
+            transform={`translate(${targetX}, ${targetY})`}
+            initial={{ scale: 0, rotate: -45 }}
+            animate={{ scale: 1.05, rotate: 0 }}
+            transition={{ type: 'spring', damping: 14, stiffness: 120 }}
+          >
+            {bloom.id === 'rose' && (
+              <g>
+                <circle cx="0" cy="0" r="30" fill="#EFAAA4" />
+                <circle cx="-6" cy="-6" r="18" fill="#F4BDB7" />
+                <circle cx="6" cy="-6" r="18" fill="#F4BDB7" />
+                <circle cx="0" cy="8" r="20" fill="#EE9C95" />
+                <circle cx="-10" cy="0" r="16" fill="#F4BDB7" />
+                <circle cx="12" cy="0" r="16" fill="#F4BDB7" />
+                <circle cx="0" cy="0" r="11" fill="#D67B73" />
+                <circle cx="0" cy="0" r="5" fill="#BD5F57" />
+              </g>
+            )}
+            {bloom.id === 'tulip' && (
+              <g transform="translate(0, -5)">
+                <path d="M-20,18 C-20,-12 0,-25 0,-25 C0,-25 20,-12 20,18 C20,32 10,36 0,36 C-10,36 -20,32 -20,18 Z" fill="#E26D74" />
+                <path d="M-12,18 C-12,-3 0,-18 0,-18 C0,-18 12,-3 12,18 C12,28 6,31 0,31 C-6,31 -12,28 -12,18 Z" fill="#EE8B91" />
+                <path d="M-5,18 C-5,3 0,-12 0,-12 C0,-12 5,3 5,18 C5,22 2.5,25 0,25 C-2.5,25 -5,22 -5,18 Z" fill="#BD4E55" />
+              </g>
+            )}
+            {bloom.id === 'ranunculus' && (
+              <g>
+                <circle cx="0" cy="0" r="28" fill="#EFA24C" />
+                <circle cx="0" cy="0" r="23" fill="#F3B367" />
+                <circle cx="0" cy="0" r="18" fill="#F6C582" />
+                <circle cx="0" cy="0" r="13" fill="#EFA24C" />
+                <circle cx="0" cy="0" r="8" fill="#D2842B" />
+                <circle cx="0" cy="0" r="4" fill="#9F5B12" />
+              </g>
+            )}
+            {bloom.id === 'peony' && (
+              <g>
+                <circle cx="0" cy="0" r="36" fill="#F5C0D3" />
+                <path d="M-22,-22 Q-36,0 -22,22 Q0,36 22,22 Q36,0 22,-22 Q0,-36 -22,-22 Z" fill="#F7CAD9" />
+                <circle cx="0" cy="0" r="24" fill="#F3A7C3" />
+                <circle cx="0" cy="0" r="16" fill="#EC81AA" />
+                <circle cx="0" cy="0" r="9" fill="#DA5387" />
+                <circle cx="0" cy="0" r="3" fill="#B72D62" />
+              </g>
+            )}
+            {bloom.id === 'hydrangea' && (
+              <g>
+                <circle cx="0" cy="0" r="38" fill="#90BFE6" opacity="0.85" />
+                <circle cx="-14" cy="-14" r="11" fill="#B1D4F1" />
+                <circle cx="14" cy="-14" r="11" fill="#B1D4F1" />
+                <circle cx="-14" cy="14" r="11" fill="#B1D4F1" />
+                <circle cx="14" cy="14" r="11" fill="#B1D4F1" />
+                <circle cx="0" cy="-20" r="9" fill="#CDE3F7" />
+                <circle cx="0" cy="20" r="9" fill="#CDE3F7" />
+                <circle cx="-20" cy="0" r="9" fill="#CDE3F7" />
+                <circle cx="20" cy="0" r="9" fill="#CDE3F7" />
+                <circle cx="0" cy="0" r="13" fill="#B1D4F1" />
+                <circle cx="0" cy="0" r="3" fill="#FDFBF7" />
+              </g>
+            )}
+            {bloom.id === 'eucalyptus' && (
+              <g>
+                <line x1="0" y1="-25" x2="0" y2="25" stroke="#7C8D78" strokeWidth="3.5" />
+                <ellipse cx="-10" cy="-12" rx="12" ry="8" fill="#9CB297" />
+                <ellipse cx="10" cy="-12" rx="12" ry="8" fill="#9CB297" />
+                <ellipse cx="-12" cy="4" rx="14" ry="9" fill="#8FA58A" />
+                <ellipse cx="12" cy="4" rx="14" ry="9" fill="#8FA58A" />
+                <ellipse cx="0" cy="-22" rx="7" ry="5" fill="#AFC4AB" />
+              </g>
+            )}
+          </motion.g>
+        );
+      })}
+
+      {/* Wrapping & Vessel Layer */}
+      {wrap && (
+        <g>
+          {wrap.id === 'paper' && (
+            <motion.g
+              initial={{ opacity: 0, y: 25 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <polygon points="120,380 200,280 280,380 200,390" fill="#C2B095" stroke="#A79477" strokeWidth="1.5" />
+              <polygon points="150,380 200,295 250,380" fill="#D3C3AA" />
+              <circle cx="200" cy="320" r="4" fill="#695D4B" />
+              <path d="M 200 320 Q 180 300 175 320 Q 185 330 200 320" stroke="#695D4B" strokeWidth="2" fill="none" />
+              <path d="M 200 320 Q 220 300 225 320 Q 215 330 200 320" stroke="#695D4B" strokeWidth="2" fill="none" />
+              <path d="M 200 320 L 192 345" stroke="#695D4B" strokeWidth="1.5" />
+              <path d="M 200 320 L 206 345" stroke="#695D4B" strokeWidth="1.5" />
+            </motion.g>
+          )}
+
+          {wrap.id === 'silk' && (
+            <motion.g
+              initial={{ opacity: 0, y: 25 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <path d="M 196 320 Q 175 350 165 390" stroke="#EADFD9" strokeWidth="5" strokeLinecap="round" fill="none" />
+              <path d="M 204 320 Q 225 350 235 390" stroke="#EADFD9" strokeWidth="5" strokeLinecap="round" fill="none" />
+              <path d="M 198 320 Q 192 355 188 395" stroke="#DED1C9" strokeWidth="3" strokeLinecap="round" fill="none" />
+              <ellipse cx="184" cy="320" rx="14" ry="9" fill="#EADFD9" stroke="#D4C4BC" strokeWidth="1" />
+              <ellipse cx="216" cy="320" rx="14" ry="9" fill="#EADFD9" stroke="#D4C4BC" strokeWidth="1" />
+              <circle cx="200" cy="320" r="6" fill="#E4D3C9" />
+            </motion.g>
+          )}
+
+          {wrap.id === 'glass' && (
+            <motion.g
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: 'spring', damping: 14 }}
+            >
+              <rect x="150" y="295" width="100" height="90" fill="rgba(177, 212, 241, 0.18)" rx="10" />
+              <rect x="150" y="270" width="100" height="115" stroke="rgba(253, 251, 247, 0.4)" strokeWidth="4.5" fill="rgba(253, 251, 247, 0.12)" rx="12" />
+              <rect x="150" y="270" width="100" height="115" stroke="rgba(28, 45, 31, 0.12)" strokeWidth="1.5" fill="none" rx="12" />
+              <line x1="162" y1="285" x2="162" y2="365" stroke="rgba(253, 251, 247, 0.45)" strokeWidth="2" strokeLinecap="round" />
+              <line x1="238" y1="290" x2="238" y2="340" stroke="rgba(253, 251, 247, 0.2)" strokeWidth="1" strokeLinecap="round" />
+            </motion.g>
+          )}
+        </g>
+      )}
+    </svg>
+  );
+};
 
 const BouquetBuilder = () => {
   const { playClick, playHover, playSuccess } = useSound();
@@ -149,28 +360,11 @@ const BouquetBuilder = () => {
               </div>
 
               {/* Dynamic Visualization based on steps */}
-              <div className="aspect-4/3 w-full rounded-xl overflow-hidden relative shadow-sm border border-brand-olive/5 bg-brand-rose/20 flex items-center justify-center">
-                {selectedMood ? (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="absolute inset-0"
-                  >
-                    <img
-                      src={selectedMood.imageUrl}
-                      alt={selectedMood.name}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent flex flex-col justify-end p-5 text-white">
-                      <span className="text-[10px] uppercase font-display tracking-widest text-brand-gold font-bold">
-                        Selected Theme
-                      </span>
-                      <h3 className="text-xl font-serif">{selectedMood.name}</h3>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <div className="text-center p-6 space-y-2">
-                    <div className="w-12 h-12 rounded-full border border-brand-olive/15 flex items-center justify-center mx-auto text-brand-sage">
+              <div className="aspect-4/3 w-full rounded-xl overflow-hidden relative shadow-sm border border-brand-olive/5 bg-brand-cream/60 flex items-center justify-center">
+                <BouquetGraphic mood={selectedMood} blooms={selectedBlooms} wrap={selectedWrap} />
+                {!selectedMood && (
+                  <div className="absolute text-center p-6 space-y-2 pointer-events-none">
+                    <div className="w-12 h-12 rounded-full border border-brand-olive/15 flex items-center justify-center mx-auto text-brand-sage animate-spin-slow">
                       ✦
                     </div>
                     <p className="text-xs font-display uppercase tracking-widest text-brand-sage font-bold">
