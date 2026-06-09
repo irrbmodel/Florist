@@ -36,7 +36,6 @@ const Facebook = ({ className = 'w-5 h-5' }) => (
 );
 
 // Custom component imports
-import CustomCursor from './components/CustomCursor';
 
 import ScrollReveal from './components/ScrollReveal';
 import ProductModal from './components/ProductModal';
@@ -171,7 +170,6 @@ const App = () => {
   return (
     <>
       {/* Immersive Elements */}
-      <CustomCursor />
 
       {/* Fullscreen Sliding Navigation Menu */}
       <AnimatePresence>
@@ -312,10 +310,10 @@ const App = () => {
         <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
               {/* Left Text */}
           <div className="lg:col-span-6 space-y-8">
-            <ScrollReveal variant="text-reveal-words" className="text-5xl md:text-7xl lg:text-8xl font-serif text-brand-olive font-medium leading-none tracking-tight">
+            <ScrollReveal variant="text-reveal-words" animateOnMount={true} className="text-5xl md:text-7xl lg:text-8xl font-serif text-brand-olive font-medium leading-none tracking-tight">
               Poetry Written In Petals
             </ScrollReveal>
-                  <ScrollReveal variant="slide-up" delay={0.4} className="space-y-6 max-w-lg">
+                  <ScrollReveal variant="slide-up" animateOnMount={true} delay={0.4} className="space-y-6 max-w-lg">
               <p className="text-brand-charcoal/70 text-sm md:text-base leading-relaxed">
                 Haute couture floristry crafted in Paris. We compose structural living artwork that elevates residential spaces, fashion editorials, and intimate gatherings.
               </p>
@@ -342,7 +340,7 @@ const App = () => {
             style={{ y: heroImageY }}
             className="lg:col-span-6 flex justify-center lg:justify-end relative"
           >
-            <ScrollReveal variant="reveal-mask" duration={1.2} className="w-full max-w-md aspect-3/4 rounded-2xl shadow-xl relative group">
+            <ScrollReveal variant="reveal-mask" animateOnMount={true} duration={1.2} className="w-full max-w-md aspect-3/4 rounded-2xl shadow-xl relative group">
               <img
                 src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=1200&q=80"
                 alt="Floristry creation"

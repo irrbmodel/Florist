@@ -9,6 +9,7 @@ export const ScrollReveal = ({
   threshold = 0.15,
   className = '',
   once = true,
+  animateOnMount = false,
 }) => {
   // Define animation presets
   const presets = {
@@ -43,14 +44,18 @@ export const ScrollReveal = ({
     return (
       <div className={`overflow-hidden relative ${className}`}>
         <motion.div
-          initial={{ y: '102%', scale: 1.08 }}
-          whileInView={{ y: 0, scale: 1 }}
+          initial={{ clipPath: 'inset(100% 0% 0% 0%)', scale: 1.08 }}
+          {...(animateOnMount ? { animate: 'visible' } : { whileInView: 'visible' })}
+          variants={{
+            visible: { clipPath: 'inset(0% 0% 0% 0%)', scale: 1 }
+          }}
           viewport={{ once, margin: '-5%' }}
           transition={{
             duration: duration + 0.35,
             delay,
             ease: [0.16, 1, 0.3, 1], // easeOutExpo
           }}
+          className="w-full h-full"
         >
           {children}
         </motion.div>
@@ -90,7 +95,7 @@ export const ScrollReveal = ({
       <motion.span
         variants={container}
         initial="hidden"
-        whileInView="visible"
+        {...(animateOnMount ? { animate: 'visible' } : { whileInView: 'visible' })}
         viewport={{ once, margin: '-5%' }}
         className={`inline-block ${className}`}
       >
@@ -137,7 +142,7 @@ export const ScrollReveal = ({
       <motion.span
         variants={container}
         initial="hidden"
-        whileInView="visible"
+        {...(animateOnMount ? { animate: 'visible' } : { whileInView: 'visible' })}
         viewport={{ once, margin: '-5%' }}
         className={`inline-block ${className}`}
       >
@@ -160,7 +165,7 @@ export const ScrollReveal = ({
   return (
     <motion.div
       initial="hidden"
-      whileInView="visible"
+      {...(animateOnMount ? { animate: 'visible' } : { whileInView: 'visible' })}
       viewport={{ once, amount: threshold }}
       variants={selectedPreset}
       transition={{
