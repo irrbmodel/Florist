@@ -24,23 +24,33 @@ const PreloaderFlower = ({ progress }) => {
         transition={{ ease: "easeOut", duration: 0.1 }}
       />
       {/* Growing Leaf Left */}
-      <motion.path
-        d="M 95 130 Q 70 120 75 108 Q 93 113 96 125"
-        fill="currentColor"
-        opacity="0.8"
+      <motion.g
+        transform="translate(95, 130)"
         initial={{ scale: 0 }}
         animate={{ scale: progress > 30 ? 1 : 0 }}
         transition={{ type: "spring", stiffness: 90 }}
-      />
+        style={{ originX: 0, originY: 0 }}
+      >
+        <path
+          d="M 0 0 Q -25 -10 -20 -22 Q -2 -17 1 -5"
+          fill="currentColor"
+          opacity="0.8"
+        />
+      </motion.g>
       {/* Growing Leaf Right */}
-      <motion.path
-        d="M 98 105 Q 120 95 116 83 Q 100 88 99 100"
-        fill="currentColor"
-        opacity="0.8"
+      <motion.g
+        transform="translate(98, 105)"
         initial={{ scale: 0 }}
         animate={{ scale: progress > 55 ? 1 : 0 }}
         transition={{ type: "spring", stiffness: 90 }}
-      />
+        style={{ originX: 0, originY: 0 }}
+      >
+        <path
+          d="M 0 0 Q 22 -10 18 -22 Q 2 -17 1 -5"
+          fill="currentColor"
+          opacity="0.8"
+        />
+      </motion.g>
       {/* Blossoming Flower Head */}
       <motion.g
         transform="translate(100, 70)"
@@ -179,7 +189,7 @@ export const Preloader = ({ onComplete }) => {
           {/* Top Details */}
           <div className="flex justify-between items-center text-[10px] font-display uppercase tracking-widest text-brand-gold font-bold z-10">
             <span>FLEUR L’ATELIER</span>
-            <span>PARIS — EST. 2026</span>
+            <span>KOLKATA, WEST BENGAL — EST. 2026</span>
           </div>
 
           {/* Central Rotating Quotes & Growing Flower */}
@@ -207,7 +217,7 @@ export const Preloader = ({ onComplete }) => {
           {/* Bottom Progress Counter */}
           <div className="flex justify-between items-end border-t border-brand-cream/10 pt-6 z-10">
             <span className="text-[10px] font-display uppercase tracking-widest text-brand-sage font-bold">
-              SYSTEM INITIALIZED
+              ATELIER AWAKENING
             </span>
             <div className="font-serif text-7xl md:text-9xl leading-none font-light tracking-tighter text-brand-gold flex items-baseline">
               <span>{progress.toString().padStart(3, '0')}</span>

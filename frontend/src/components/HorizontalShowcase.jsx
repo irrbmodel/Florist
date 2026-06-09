@@ -5,33 +5,33 @@ const CHRONICLES = [
   {
     id: 'intro',
     title: 'The Botanical Chronology',
-    subtitle: 'A Tri-City Narrative',
-    description: 'Each quarter, Fleur L’Atelier designs structural, fleeting dialogues inspired by seasonal architecture. Read our current vignettes across Paris, Milan, and New York.',
+    subtitle: 'A Bengal Narrative',
+    description: 'Each quarter, Fleur L’Atelier designs structural, fleeting dialogues inspired by seasonal architecture. Read our current vignettes across Kolkata, West Bengal.',
     type: 'text'
   },
   {
     id: 'spring',
     season: 'Spring / Awakening',
     title: 'Alabaster Anemone',
-    coordinates: '48.8566° N, 2.3522° E',
+    coordinates: '22.5726° N, 88.3639° E',
     image: 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=900&q=80',
-    description: 'Fine layers of white anemones, heavy snow hydrangeas, and soft eucalyptus twigs. Sourced from the Loire Valley.'
+    description: 'Fine layers of white anemones, heavy snow hydrangeas, and soft eucalyptus twigs. Sourced from the Himalayan foothills.'
   },
   {
     id: 'summer',
     season: 'Summer / Solar Bloom',
     title: 'L’Orangerie Gold',
-    coordinates: '45.4642° N, 9.1900° E',
+    coordinates: '22.5626° N, 88.3939° E',
     image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=900&q=80',
-    description: 'Vibrant French sunflowers, honey wheat, and wild orange orchids. Inspired by sun-drenched Italian groves.'
+    description: 'Vibrant sunflowers, honey wheat, and wild orange orchids. Inspired by the sun-drenched valleys of Bengal.'
   },
   {
     id: 'autumn',
     season: 'Autumn / Sienna Hearth',
     title: 'Pampas Rust',
-    coordinates: '40.7128° W, 74.0060° W',
+    coordinates: '22.5826° N, 88.3439° E',
     image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=900&q=80',
-    description: 'Sustainable dried cortaderia plumes, sienna-dyed eucalyptus fans, and hand-thrown raw stoneware vessels.'
+    description: 'Sustainable dried plumes, sienna-dyed eucalyptus fans, and hand-thrown raw stoneware vessels from local artisans.'
   }
 ];
 
@@ -56,7 +56,7 @@ export const HorizontalShowcase = () => {
         
         {/* Floating coordinate decoration watermark */}
         <div className="absolute top-24 left-8 md:left-16 text-[9px] font-display uppercase tracking-widest text-brand-gold/40 font-bold z-10 hidden sm:block">
-          ✦ Live Vignettes // 48.85° N, 2.35° E
+          ✦ Live Vignettes // 22.57° N, 88.36° E
         </div>
 
         <motion.div style={{ x }} className="flex h-[75vh] items-center pl-6 md:pl-24 pr-24">

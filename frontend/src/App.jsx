@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { 
   ShoppingBag, Menu, X, ArrowDownRight, ArrowUpRight, 
   Sparkles, Mail, Phone, MapPin, Heart
@@ -45,6 +45,7 @@ import CustomCursor from './components/CustomCursor';
 import Magnetic from './components/Magnetic';
 import HorizontalShowcase from './components/HorizontalShowcase';
 import { useSmoothScroll } from './components/SmoothScroll';
+import CartDrawer from './components/CartDrawer';
 
 
 
@@ -135,12 +136,46 @@ const GALLERY_SLIDES = [
 const App = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const galleryConstraintsRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const [cartItems, setCartItems] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  const addToCart = (newItem) => {
+    setCartItems((prev) => {
+      const exists = prev.find((item) => item.id === newItem.id);
+      if (exists) {
+        return prev.map((item) =>
+          item.id === newItem.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prev, newItem];
+    });
+  };
+
+  const updateCartQuantity = (itemId, newQty) => {
+    if (newQty <= 0) {
+      removeFromCart(itemId);
+      return;
+    }
+    setCartItems((prev) =>
+      prev.map((item) => (item.id === itemId ? { ...item, quantity: newQty } : item))
+    );
+  };
+
+  const removeFromCart = (itemId) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== itemId));
+  };
+
+  const clearCart = () => {
+    setCartItems([]);
+  };
 
   const { stop, start } = useSmoothScroll();
 
@@ -159,8 +194,45 @@ const App = () => {
     offset: ["start start", "end start"]
   });
 
-  const heroImageY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const heroTextY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
+  const heroImageScale = useTransform(scrollYProgress, [0, 1], [1.12, 0.98], { clamp: true });
+  const heroTextY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"], { clamp: true });
+
+  // 3D Tilt and Parallax Layers for Hero Image Card
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Smooth springs for tilt/parallax transitions
+  const tiltX = useSpring(mouseY, { stiffness: 120, damping: 20 });
+  const tiltY = useSpring(mouseX, { stiffness: 120, damping: 20 });
+
+  // Map mouse positions to 3D rotation angles (clamped to prevent extreme tilt)
+  const rotateX = useTransform(tiltX, [-0.5, 0.5], [8, -8]);
+  const rotateY = useTransform(tiltY, [-0.5, 0.5], [-8, 8]);
+
+  // Map mouse positions to subtle shifts for the image (opposite to tilt for depth window effect)
+  const imageTranslateX = useTransform(tiltY, [-0.5, 0.5], [10, -10]);
+  const imageTranslateY = useTransform(tiltX, [-0.5, 0.5], [10, -10]);
+
+  // Map mouse positions to exaggerated shifts for the tiny floating card (opposite direction for parallax layer offset)
+  const floatTranslateX = useTransform(tiltY, [-0.5, 0.5], [-15, 15]);
+  const floatTranslateY = useTransform(tiltX, [-0.5, 0.5], [-15, 15]);
+
+  // Event handlers to track mouse position relative to card boundaries
+  const handleHeroMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    // Calculate values between -0.5 and 0.5
+    const relativeX = (e.clientX - rect.left) / width - 0.5;
+    const relativeY = (e.clientY - rect.top) / height - 0.5;
+    mouseX.set(relativeX);
+    mouseY.set(relativeY);
+  };
+
+  const handleHeroMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
 
   // Categories extraction
   const categories = ['All', 'Signature Bouquets', 'Dried Arrangements', 'Luxury Vessels', 'Botanical Gift Boxes'];
@@ -243,8 +315,8 @@ const App = () => {
                 <div>
                   <h4 className="text-[10px] font-display uppercase tracking-widest text-brand-gold font-bold mb-2">The Studio</h4>
                   <p className="font-serif text-lg leading-relaxed">
-                    17 Rue de l'Orangerie<br />
-                    75004, Paris, France
+                    17 Park Street<br />
+                    Kolkata, West Bengal 700016
                   </p>
                 </div>
                 <div>
@@ -299,9 +371,9 @@ const App = () => {
           {/* Cart Right */}
           <Magnetic strength={0.2}>
             <button 
-              onClick={() => setCartCount(prev => prev + 1)}
+              onClick={() => setIsCartOpen(true)}
               className="flex items-center gap-2 font-display uppercase text-xs tracking-widest font-bold text-brand-olive cursor-pointer relative group"
-              data-cursor-text="ADD"
+              data-cursor-text="OPEN"
             >
               <span className="hidden sm:inline">Vessel Bag</span>
               <div className="w-8 h-8 rounded-full border border-brand-olive/10 flex items-center justify-center group-hover:bg-brand-olive group-hover:text-brand-cream transition-colors duration-300 relative">
@@ -342,7 +414,7 @@ const App = () => {
             </ScrollReveal>
             <ScrollReveal variant="slide-up" animateOnMount={true} delay={0.4} className="space-y-6 max-w-lg">
               <p className="text-brand-charcoal/70 text-sm md:text-base leading-relaxed">
-                Haute couture floristry crafted in Paris. We compose structural living artwork that elevates residential spaces, fashion editorials, and intimate gatherings.
+                Haute couture floristry crafted in Kolkata, West Bengal. We compose structural living artwork that elevates residential spaces, fashion editorials, and intimate gatherings.
               </p>
               <div className="flex gap-4">
                 <Magnetic strength={0.2}>
@@ -367,34 +439,57 @@ const App = () => {
           </div>
 
           {/* Right Parallax Hero Image Card */}
-          <motion.div 
-            style={{ y: heroImageY }}
+          <div 
             className="lg:col-span-6 flex justify-center lg:justify-end relative"
+            style={{ perspective: 1000 }}
           >
-            <ScrollReveal variant="reveal-mask" animateOnMount={true} duration={1.2} className="w-full max-w-md aspect-3/4 rounded-2xl shadow-xl relative group">
-              <img
-                src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=1200&q=80"
-                alt="Floristry creation"
-                className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-2000 ease-out"
-              />
-              <div className="absolute inset-0 bg-brand-olive/5" />
-            </ScrollReveal>
-
-            {/* Tiny Floating Detail Card */}
-            <motion.div 
-              style={{ y: heroTextY }}
-              className="absolute -bottom-6 -left-6 bg-brand-cream/95 backdrop-blur-md p-4 rounded-xl border border-brand-olive/10 shadow-lg max-w-[200px] hidden md:block"
+            <motion.div
+              style={{ 
+                rotateX, 
+                rotateY, 
+                transformStyle: "preserve-3d" 
+              }}
+              onMouseMove={handleHeroMouseMove}
+              onMouseLeave={handleHeroMouseLeave}
+              className="w-full max-w-md aspect-3/4 relative group cursor-pointer"
             >
-              <span className="text-[9px] font-display uppercase tracking-widest text-brand-sage font-bold block mb-1">Current Composition</span>
-              <p className="font-serif text-sm text-brand-olive italic leading-snug">"The Midnight Grace" featuring Wild Ranunculus</p>
+              {/* Image Container with overflow hidden and rounded corners */}
+              <div className="w-full h-full rounded-2xl overflow-hidden shadow-xl relative">
+                <ScrollReveal variant="reveal-mask" animateOnMount={true} duration={1.2} className="w-full h-full relative">
+                  <motion.img
+                    src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=1200&q=80"
+                    alt="Floristry creation"
+                    style={{ 
+                      x: imageTranslateX, 
+                      y: imageTranslateY,
+                      scale: 1.15
+                    }}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-brand-olive/5 pointer-events-none" />
+                </ScrollReveal>
+              </div>
+
+              {/* Tiny Floating Detail Card - z-index and translateZ for depth */}
+              <motion.div 
+                style={{ 
+                  x: floatTranslateX, 
+                  y: floatTranslateY,
+                  z: 50
+                }}
+                className="absolute -bottom-6 -left-6 bg-brand-cream/95 backdrop-blur-md p-4 rounded-xl border border-brand-olive/10 shadow-lg max-w-[200px] z-20 hidden md:block"
+              >
+                <span className="text-[9px] font-display uppercase tracking-widest text-brand-sage font-bold block mb-1">Current Composition</span>
+                <p className="font-serif text-sm text-brand-olive italic leading-snug">"The Midnight Grace" featuring Wild Ranunculus</p>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          </div>
 
         </div>
 
         {/* Bottom Bar */}
         <div className="max-w-7xl mx-auto w-full flex justify-between items-center border-t border-brand-olive/10 pt-6 mt-12 relative z-10 text-[10px] font-display uppercase tracking-widest text-brand-sage font-bold">
-          <span>Paris — Milan — New York</span>
+          <span>Kolkata — West Bengal</span>
           <a href="#shop"   className="flex items-center gap-1 hover:text-brand-olive transition-colors cursor-pointer">
             Scroll to curations <ArrowDownRight className="w-3.5 h-3.5" />
           </a>
@@ -494,7 +589,7 @@ const App = () => {
       </section>
 
       {/* INTERACTIVE BOUQUET BUILDER */}
-      <BouquetBuilder />
+      <BouquetBuilder onAddToBag={addToCart} />
 
       {/* PHILOSOPHY & STORY SECTION */}
       <section className="py-24 bg-brand-olive text-brand-cream relative overflow-hidden" id="philosophy">
@@ -639,8 +734,19 @@ const App = () => {
 
                 <div className="pt-8">
                   <button
-                    onClick={() => setCartCount(prev => prev + 1)}
-                                  className={`w-full py-3 rounded-full font-display uppercase text-[10px] tracking-widest font-bold shadow-sm transition-colors duration-300 cursor-pointer ${
+                    onClick={() => {
+                      addToCart({
+                        id: `plan-${plan.title.replace(/\s+/g, '-').toLowerCase()}`,
+                        type: 'plan',
+                        title: plan.title,
+                        image: 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80',
+                        price: parseFloat(plan.price),
+                        details: `${plan.tier} (${plan.cycle})`,
+                        quantity: 1
+                      });
+                      setIsCartOpen(true);
+                    }}
+                    className={`w-full py-3 rounded-full font-display uppercase text-[10px] tracking-widest font-bold shadow-sm transition-colors duration-300 cursor-pointer ${
                       plan.popular 
                         ? 'bg-brand-olive text-brand-cream hover:bg-brand-charcoal' 
                         : 'border border-brand-olive/20 text-brand-olive hover:bg-brand-rose/20'
@@ -673,10 +779,10 @@ const App = () => {
         </div>
 
         {/* Drag Container */}
-        <div className="w-full cursor-grab active:cursor-grabbing">
+        <div ref={galleryConstraintsRef} className="w-full overflow-hidden cursor-grab active:cursor-grabbing">
           <motion.div 
             drag="x"
-            dragConstraints={{ left: -600, right: 0 }}
+            dragConstraints={galleryConstraintsRef}
             className="flex gap-6 px-6 md:px-12 w-max"
             data-cursor-text="DRAG"
           >
@@ -697,7 +803,7 @@ const App = () => {
                 </div>
                 <div className="flex justify-between items-center px-1">
                   <span className="text-xs font-display uppercase tracking-widest text-brand-sage font-bold">{slide.title}</span>
-                  <span className="text-xs font-serif text-brand-olive italic">Paris Studio</span>
+                  <span className="text-xs font-serif text-brand-olive italic">Kolkata Studio</span>
                 </div>
               </motion.div>
             ))}
@@ -814,6 +920,17 @@ const App = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         product={activeProduct}
+        onAddToBag={addToCart}
+      />
+
+      {/* Cart Drawer */}
+      <CartDrawer
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cartItems={cartItems}
+        onUpdateQuantity={updateCartQuantity}
+        onRemoveItem={removeFromCart}
+        onClearCart={clearCart}
       />
     </>
   );

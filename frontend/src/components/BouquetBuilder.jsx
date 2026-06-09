@@ -218,7 +218,7 @@ const BouquetGraphic = ({ mood, blooms, wrap }) => {
   );
 };
 
-const BouquetBuilder = () => {
+const BouquetBuilder = ({ onAddToBag }) => {
   const [step, setStep] = useState(1); // 1: Mood, 2: Blooms, 3: Wrap, 4: Summary
 
   const [selectedMood, setSelectedMood] = useState(null);
@@ -315,6 +315,17 @@ const BouquetBuilder = () => {
 
   const handleOrder = () => {
     setIsOrdered(true);
+    if (onAddToBag && selectedMood) {
+      onAddToBag({
+        id: `custom-${Date.now()}`,
+        type: 'custom',
+        title: `Bespoke: ${selectedMood.name}`,
+        image: selectedMood.imageUrl || 'https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&w=600&q=80',
+        price: parseFloat(currentTotal),
+        details: `Blooms: ${selectedBlooms.map(b => b.name).join(', ')} | Wrap: ${selectedWrap ? selectedWrap.name : 'None'}`,
+        quantity: 1
+      });
+    }
   };
 
   // Helper variables for rendering preview

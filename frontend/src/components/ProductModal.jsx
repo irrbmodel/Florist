@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Heart, Info, ArrowRight } from 'lucide-react';
 
-const ProductModal = ({ isOpen, onClose, product }) => {
+const ProductModal = ({ isOpen, onClose, product, onAddToBag }) => {
   const [selectedSize, setSelectedSize] = useState('signature'); // signature, deluxe, grandeur
   const [giftNote, setGiftNote] = useState('');
   const [careOpen, setCareOpen] = useState(false);
@@ -36,6 +36,17 @@ const ProductModal = ({ isOpen, onClose, product }) => {
 
   const handleAddToBag = () => {
     setIsAdded(true);
+    if (onAddToBag) {
+      onAddToBag({
+        id: `product-${product.id}-${selectedSize}`,
+        type: 'product',
+        title: product.title,
+        image: product.image,
+        price: parseFloat(finalPrice),
+        details: `Size: ${selectedSize.charAt(0).toUpperCase() + selectedSize.slice(1)}${giftNote.trim() ? ` | Note: "${giftNote.trim()}"` : ''}`,
+        quantity: 1
+      });
+    }
     setTimeout(() => {
       setIsAdded(false);
       onClose();
