@@ -468,7 +468,6 @@ const BouquetBuilder = ({ onAddToBag }) => {
                       <button
                         key={mood.id}
                         onClick={() => selectMood(mood)}
-                        data-cursor-text="CHOOSE"
                         className={`p-5 rounded-xl border text-left flex flex-col justify-between aspect-square transition-all duration-500 cursor-pointer relative overflow-hidden group ${
                           selectedMood?.id === mood.id
                             ? 'border-brand-olive bg-brand-olive/5 shadow-md scale-[1.02]'
@@ -523,7 +522,6 @@ const BouquetBuilder = ({ onAddToBag }) => {
                         <button
                           key={bloom.id}
                           onClick={() => toggleBloom(bloom)}
-                          data-cursor-text={isSelected ? "REMOVE" : "ADD"}
                           className={`p-4 rounded-xl border text-left flex flex-col justify-between transition-all duration-300 cursor-pointer ${
                             isSelected
                               ? 'border-brand-olive bg-brand-olive/5 shadow-md'
@@ -611,7 +609,6 @@ const BouquetBuilder = ({ onAddToBag }) => {
                       <button
                         key={wrap.id}
                         onClick={() => selectWrap(wrap)}
-                        data-cursor-text="SELECT"
                         className={`w-full p-4 rounded-xl border text-left flex items-center justify-between transition-all duration-300 cursor-pointer ${
                           selectedWrap?.id === wrap.id
                             ? 'border-brand-olive bg-brand-olive/5 shadow-md'

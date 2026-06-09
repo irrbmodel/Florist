@@ -10,6 +10,16 @@ const PRELOADER_QUOTES = [
 
 // Stylized linear flower that blossoms dynamically based on loader progress
 const PreloaderFlower = ({ progress }) => {
+  const t = progress / 100;
+  
+  // Stem Bezier curve parameters (M 100 170 Q 90 120 100 70)
+  // B(t) = (1-t)^2 * P0 + 2*(1-t)*t * P1 + t^2 * P2
+  const flowerX = 100 - 20 * t + 20 * t * t;
+  const flowerY = 170 - 100 * t;
+  
+  // Blossoming animation starts when stem is 70% grown
+  const blossom = progress < 70 ? 0 : (progress - 70) / 30; // 0 to 1
+
   return (
     <svg viewBox="0 0 200 200" className="w-24 h-24 md:w-32 md:h-32 text-brand-gold mb-4 md:mb-0">
       {/* Growing Stem */}
@@ -20,14 +30,16 @@ const PreloaderFlower = ({ progress }) => {
         strokeLinecap="round"
         fill="none"
         initial={{ pathLength: 0 }}
-        animate={{ pathLength: progress / 100 }}
+        animate={{ pathLength: t }}
         transition={{ ease: "easeOut", duration: 0.1 }}
       />
       {/* Growing Leaf Left */}
       <motion.g
-        transform="translate(95, 130)"
-        initial={{ scale: 0 }}
-        animate={{ scale: progress > 30 ? 1 : 0 }}
+        animate={{
+          x: 95.2,
+          y: 130,
+          scale: progress > 40 ? 1 : 0
+        }}
         transition={{ type: "spring", stiffness: 90 }}
         style={{ originX: 0, originY: 0 }}
       >
@@ -39,9 +51,11 @@ const PreloaderFlower = ({ progress }) => {
       </motion.g>
       {/* Growing Leaf Right */}
       <motion.g
-        transform="translate(98, 105)"
-        initial={{ scale: 0 }}
-        animate={{ scale: progress > 55 ? 1 : 0 }}
+        animate={{
+          x: 95.45,
+          y: 105,
+          scale: progress > 65 ? 1 : 0
+        }}
         transition={{ type: "spring", stiffness: 90 }}
         style={{ originX: 0, originY: 0 }}
       >
@@ -53,22 +67,24 @@ const PreloaderFlower = ({ progress }) => {
       </motion.g>
       {/* Blossoming Flower Head */}
       <motion.g
-        transform="translate(100, 70)"
-        initial={{ scale: 0 }}
-        animate={{ scale: (progress / 100) * 1.1 }}
+        animate={{
+          x: flowerX,
+          y: flowerY,
+          scale: t * 1.1
+        }}
         transition={{ ease: "easeOut", duration: 0.1 }}
       >
         {/* Outer Petal Ring */}
         <circle cx="0" cy="0" r="16" fill="currentColor" opacity="0.15" />
-        <circle cx="-10" cy="-10" r="11" fill="currentColor" opacity="0.35" />
-        <circle cx="10" cy="-10" r="11" fill="currentColor" opacity="0.35" />
-        <circle cx="-10" cy="10" r="11" fill="currentColor" opacity="0.35" />
-        <circle cx="10" cy="10" r="11" fill="currentColor" opacity="0.35" />
+        <circle cx={-10 * blossom} cy={-10 * blossom} r="11" fill="currentColor" opacity="0.35" />
+        <circle cx={10 * blossom} cy={-10 * blossom} r="11" fill="currentColor" opacity="0.35" />
+        <circle cx={-10 * blossom} cy={10 * blossom} r="11" fill="currentColor" opacity="0.35" />
+        <circle cx={10 * blossom} cy={10 * blossom} r="11" fill="currentColor" opacity="0.35" />
         {/* Inner Bloom Petals */}
-        <circle cx="0" cy="-8" r="8" fill="var(--color-brand-rose)" opacity="0.9" />
-        <circle cx="0" cy="8" r="8" fill="var(--color-brand-rose)" opacity="0.9" />
-        <circle cx="-8" cy="0" r="8" fill="var(--color-brand-rose)" opacity="0.9" />
-        <circle cx="8" cy="0" r="8" fill="var(--color-brand-rose)" opacity="0.9" />
+        <circle cx="0" cy={-8 * blossom} r="8" fill="var(--color-brand-rose)" opacity="0.9" />
+        <circle cx="0" cy={8 * blossom} r="8" fill="var(--color-brand-rose)" opacity="0.9" />
+        <circle cx={-8 * blossom} cy="0" r="8" fill="var(--color-brand-rose)" opacity="0.9" />
+        <circle cx={8 * blossom} cy={0} r="8" fill="var(--color-brand-rose)" opacity="0.9" />
         <circle cx="0" cy="0" r="6" fill="var(--color-brand-gold)" />
       </motion.g>
     </svg>

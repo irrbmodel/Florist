@@ -34,7 +34,6 @@ export const Magnetic = ({ children, strength = 0.35, className = '', style = {}
       animate={{ x: position.x, y: position.y }}
       transition={{ type: 'spring', damping: 18, stiffness: 180, mass: 0.15 }}
       style={{ display: 'inline-block', ...style }}
-      data-cursor-magnetic
     >
       {children}
     </motion.div>

@@ -41,7 +41,7 @@ import ProductModal from './components/ProductModal';
 import BouquetBuilder from './components/BouquetBuilder';
 import Preloader from './components/Preloader';
 import PetalParticles from './components/PetalParticles';
-import CustomCursor from './components/CustomCursor';
+
 import Magnetic from './components/Magnetic';
 import HorizontalShowcase from './components/HorizontalShowcase';
 import { useSmoothScroll } from './components/SmoothScroll';
@@ -256,7 +256,6 @@ const App = () => {
   };  return (
     <>
       {/* Immersive Elements */}
-      <CustomCursor />
       <Preloader onComplete={() => setIsLoaded(true)} />
       {isLoaded && <PetalParticles />}
 
@@ -373,7 +372,6 @@ const App = () => {
             <button 
               onClick={() => setIsCartOpen(true)}
               className="flex items-center gap-2 font-display uppercase text-xs tracking-widest font-bold text-brand-olive cursor-pointer relative group"
-              data-cursor-text="OPEN"
             >
               <span className="hidden sm:inline">Vessel Bag</span>
               <div className="w-8 h-8 rounded-full border border-brand-olive/10 flex items-center justify-center group-hover:bg-brand-olive group-hover:text-brand-cream transition-colors duration-300 relative">
@@ -553,7 +551,6 @@ const App = () => {
                   <div 
                     onClick={() => openProductDetails(product)}
                                   className="aspect-3/4 w-full rounded-xl overflow-hidden border border-brand-olive/5 shadow-sm relative group cursor-pointer"
-                    data-cursor-text="VIEW"
                   >
                     <img
                       src={product.image}
@@ -784,7 +781,6 @@ const App = () => {
             drag="x"
             dragConstraints={galleryConstraintsRef}
             className="flex gap-6 px-6 md:px-12 w-max"
-            data-cursor-text="DRAG"
           >
             {GALLERY_SLIDES.map((slide, idx) => (
               <motion.div 
