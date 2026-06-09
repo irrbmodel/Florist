@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --font-display: "Syne", sans-serif;
+
+  --color-brand-cream: #FDFBF7;
+  --color-brand-olive: #1C2D1F;
+  --color-brand-sage: #7C8D78;
+  --color-brand-gold: #C5A880;
+  --color-brand-rose: #EADFD9;
+  --color-brand-charcoal: #121212;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-brand-cream);
+    color: var(--color-brand-charcoal);
+  }
+
+  /* Custom scrollbar for desktop/premium feel */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-brand-cream);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-brand-sage);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-brand-olive);
+  }
+}
+
+/* Hide default cursor on desktop devices when custom cursor is active */
+@media (min-width: 1024px) {
+  .custom-cursor-active,
+  .custom-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+/* Scroll reveal text animations */
+.word-wrap {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(253, 251, 247, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(28, 45, 31, 0.08);
+}
