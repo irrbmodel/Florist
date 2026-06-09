@@ -42,24 +42,28 @@ export const ScrollReveal = ({
   // 1. mask revealing container clip
   if (variant === 'reveal-mask') {
     return (
-      <div className={`overflow-hidden relative ${className}`}>
+      <motion.div
+        initial="hidden"
+        {...(animateOnMount ? { animate: 'visible' } : { whileInView: 'visible' })}
+        viewport={{ once, margin: '-5%' }}
+        className={`overflow-hidden relative ${className}`}
+      >
         <motion.div
-          initial={{ clipPath: 'inset(100% 0% 0% 0%)', scale: 1.08 }}
-          {...(animateOnMount ? { animate: 'visible' } : { whileInView: 'visible' })}
           variants={{
+            hidden: { clipPath: 'inset(100% 0% 0% 0%)', scale: 1.08 },
             visible: { clipPath: 'inset(0% 0% 0% 0%)', scale: 1 }
           }}
-          viewport={{ once, margin: '-5%' }}
           transition={{
             duration: duration + 0.35,
             delay,
             ease: [0.16, 1, 0.3, 1], // easeOutExpo
           }}
-          className="w-full h-full"
+          className="w-full h-full rounded-[inherit] overflow-hidden"
+          style={{ willChange: 'clip-path, transform' }}
         >
           {children}
         </motion.div>
-      </div>
+      </motion.div>
     );
   }
 
