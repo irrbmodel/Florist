@@ -8,20 +8,134 @@ const PRELOADER_QUOTES = [
   "Fleur L’Atelier"
 ];
 
+// Stylized linear flower that blossoms dynamically based on loader progress
+const PreloaderFlower = ({ progress }) => {
+  return (
+    <svg viewBox="0 0 200 200" className="w-24 h-24 md:w-32 md:h-32 text-brand-gold mb-4 md:mb-0">
+      {/* Growing Stem */}
+      <motion.path
+        d="M 100 170 Q 90 120 100 70"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        fill="none"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: progress / 100 }}
+        transition={{ ease: "easeOut", duration: 0.1 }}
+      />
+      {/* Growing Leaf Left */}
+      <motion.path
+        d="M 95 130 Q 70 120 75 108 Q 93 113 96 125"
+        fill="currentColor"
+        opacity="0.8"
+        initial={{ scale: 0 }}
+        animate={{ scale: progress > 30 ? 1 : 0 }}
+        transition={{ type: "spring", stiffness: 90 }}
+      />
+      {/* Growing Leaf Right */}
+      <motion.path
+        d="M 98 105 Q 120 95 116 83 Q 100 88 99 100"
+        fill="currentColor"
+        opacity="0.8"
+        initial={{ scale: 0 }}
+        animate={{ scale: progress > 55 ? 1 : 0 }}
+        transition={{ type: "spring", stiffness: 90 }}
+      />
+      {/* Blossoming Flower Head */}
+      <motion.g
+        transform="translate(100, 70)"
+        initial={{ scale: 0 }}
+        animate={{ scale: (progress / 100) * 1.1 }}
+        transition={{ ease: "easeOut", duration: 0.1 }}
+      >
+        {/* Outer Petal Ring */}
+        <circle cx="0" cy="0" r="16" fill="currentColor" opacity="0.15" />
+        <circle cx="-10" cy="-10" r="11" fill="currentColor" opacity="0.35" />
+        <circle cx="10" cy="-10" r="11" fill="currentColor" opacity="0.35" />
+        <circle cx="-10" cy="10" r="11" fill="currentColor" opacity="0.35" />
+        <circle cx="10" cy="10" r="11" fill="currentColor" opacity="0.35" />
+        {/* Inner Bloom Petals */}
+        <circle cx="0" cy="-8" r="8" fill="var(--color-brand-rose)" opacity="0.9" />
+        <circle cx="0" cy="8" r="8" fill="var(--color-brand-rose)" opacity="0.9" />
+        <circle cx="-8" cy="0" r="8" fill="var(--color-brand-rose)" opacity="0.9" />
+        <circle cx="8" cy="0" r="8" fill="var(--color-brand-rose)" opacity="0.9" />
+        <circle cx="0" cy="0" r="6" fill="var(--color-brand-gold)" />
+      </motion.g>
+    </svg>
+  );
+};
+
+// Subtle background flower watermark bottom-right
+const BackgroundFlowerRight = () => (
+  <svg
+    viewBox="0 0 100 100"
+    className="absolute -right-24 -bottom-24 w-[55vw] h-[55vw] max-w-[500px] text-brand-gold/5 pointer-events-none animate-pulse z-0"
+    style={{ animationDuration: '8s' }}
+  >
+    <circle cx="50" cy="50" r="30" stroke="currentColor" strokeWidth="0.4" fill="none" />
+    <circle cx="50" cy="50" r="20" stroke="currentColor" strokeWidth="0.4" fill="none" />
+    <circle cx="50" cy="50" r="10" stroke="currentColor" strokeWidth="0.4" fill="none" />
+    {Array.from({ length: 12 }).map((_, i) => {
+      const angle = (i * 30 * Math.PI) / 180;
+      const x = 50 + Math.cos(angle) * 25;
+      const y = 50 + Math.sin(angle) * 25;
+      return (
+        <circle
+          key={i}
+          cx={x}
+          cy={y}
+          r="15"
+          stroke="currentColor"
+          strokeWidth="0.2"
+          fill="none"
+        />
+      );
+    })}
+  </svg>
+);
+
+// Subtle background flower watermark top-left
+const BackgroundFlowerLeft = () => (
+  <svg
+    viewBox="0 0 100 100"
+    className="absolute -left-20 -top-20 w-[40vw] h-[40vw] max-w-[350px] text-brand-gold/5 pointer-events-none animate-pulse z-0"
+    style={{ animationDuration: '10s' }}
+  >
+    <circle cx="50" cy="50" r="25" stroke="currentColor" strokeWidth="0.4" fill="none" />
+    <circle cx="50" cy="50" r="15" stroke="currentColor" strokeWidth="0.4" fill="none" />
+    {Array.from({ length: 8 }).map((_, i) => {
+      const angle = (i * 45 * Math.PI) / 180;
+      const x = 50 + Math.cos(angle) * 20;
+      const y = 50 + Math.sin(angle) * 20;
+      return (
+        <circle
+          key={i}
+          cx={x}
+          cy={y}
+          r="12"
+          stroke="currentColor"
+          strokeWidth="0.2"
+          fill="none"
+        />
+      );
+    })}
+  </svg>
+);
+
 export const Preloader = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
   const [quoteIdx, setQuoteIdx] = useState(0);
   const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
-    // Quote rotation
+    // Quote rotation timed to match loading duration
     const quoteInterval = setInterval(() => {
       setQuoteIdx((prev) => (prev < PRELOADER_QUOTES.length - 1 ? prev + 1 : prev));
-    }, 800);
+    }, 650);
 
     // Percentage counter
     const startTime = Date.now();
-    const duration = 2500; // 2.5 seconds loading
+    const duration = 2000; // 2.0 seconds loading
 
     const updateCounter = () => {
       const elapsed = Date.now() - startTime;
@@ -35,8 +149,8 @@ export const Preloader = ({ onComplete }) => {
           setIsDone(true);
           setTimeout(() => {
             onComplete();
-          }, 900); // Allow clip-path exit transitions to finish
-        }, 200);
+          }, 150); // Start hero reveal animations 150ms into the 900ms exit slide
+        }, 150);
       }
     };
 
@@ -47,7 +161,6 @@ export const Preloader = ({ onComplete }) => {
     };
   }, [onComplete]);
 
-
   return (
     <AnimatePresence>
       {!isDone && (
@@ -57,32 +170,42 @@ export const Preloader = ({ onComplete }) => {
             clipPath: 'inset(0% 0% 100% 0%)',
             transition: { duration: 0.9, ease: [0.85, 0, 0.15, 1] }
           }}
-          className="fixed inset-0 z-50 bg-brand-olive text-brand-cream flex flex-col justify-between p-8 md:p-16 select-none pointer-events-none"
+          className="fixed inset-0 z-50 bg-brand-olive text-brand-cream flex flex-col justify-between p-8 md:p-16 select-none pointer-events-none overflow-hidden"
         >
+          {/* Faint Background Floral Watermarks */}
+          <BackgroundFlowerRight />
+          <BackgroundFlowerLeft />
+
           {/* Top Details */}
-          <div className="flex justify-between items-center text-[10px] font-display uppercase tracking-widest text-brand-gold font-bold">
+          <div className="flex justify-between items-center text-[10px] font-display uppercase tracking-widest text-brand-gold font-bold z-10">
             <span>FLEUR L’ATELIER</span>
             <span>PARIS — EST. 2026</span>
           </div>
 
-          {/* Central Rotating Quotes */}
-          <div className="my-auto max-w-xl">
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={quoteIdx}
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 0.8 }}
-                exit={{ y: -20, opacity: 0 }}
-                transition={{ duration: 0.35 }}
-                className="font-serif text-3xl md:text-5xl italic text-left leading-relaxed text-brand-rose"
-              >
-                {PRELOADER_QUOTES[quoteIdx]}
-              </motion.p>
-            </AnimatePresence>
+          {/* Central Rotating Quotes & Growing Flower */}
+          <div className="my-auto flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16 w-full max-w-4xl mx-auto z-10">
+            <div className="flex justify-center items-center">
+              <PreloaderFlower progress={progress} />
+            </div>
+
+            <div className="max-w-xl flex-1 w-full text-center md:text-left">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={quoteIdx}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 0.8 }}
+                  exit={{ y: -20, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="font-serif text-3xl md:text-5xl italic leading-relaxed text-brand-rose"
+                >
+                  {PRELOADER_QUOTES[quoteIdx]}
+                </motion.p>
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Bottom Progress Counter */}
-          <div className="flex justify-between items-end border-t border-brand-cream/10 pt-6">
+          <div className="flex justify-between items-end border-t border-brand-cream/10 pt-6 z-10">
             <span className="text-[10px] font-display uppercase tracking-widest text-brand-sage font-bold">
               SYSTEM INITIALIZED
             </span>

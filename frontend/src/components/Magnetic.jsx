@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
-export const Magnetic = ({ children, strength = 0.35 }) => {
+export const Magnetic = ({ children, strength = 0.35, className = '', style = {} }) => {
   const ref = useRef(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
@@ -30,9 +30,11 @@ export const Magnetic = ({ children, strength = 0.35 }) => {
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      className={className}
       animate={{ x: position.x, y: position.y }}
       transition={{ type: 'spring', damping: 18, stiffness: 180, mass: 0.15 }}
-      style={{ display: 'inline-block' }}
+      style={{ display: 'inline-block', ...style }}
+      data-cursor-magnetic
     >
       {children}
     </motion.div>

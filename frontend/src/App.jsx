@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { 
   ShoppingBag, Menu, X, ArrowDownRight, ArrowUpRight, 
@@ -36,10 +36,15 @@ const Facebook = ({ className = 'w-5 h-5' }) => (
 );
 
 // Custom component imports
-
 import ScrollReveal from './components/ScrollReveal';
 import ProductModal from './components/ProductModal';
 import BouquetBuilder from './components/BouquetBuilder';
+import Preloader from './components/Preloader';
+import PetalParticles from './components/PetalParticles';
+import CustomCursor from './components/CustomCursor';
+import Magnetic from './components/Magnetic';
+import HorizontalShowcase from './components/HorizontalShowcase';
+import { useSmoothScroll } from './components/SmoothScroll';
 
 
 
@@ -128,6 +133,7 @@ const GALLERY_SLIDES = [
 ];
 
 const App = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState(null);
@@ -135,6 +141,16 @@ const App = () => {
   const [cartCount, setCartCount] = useState(0);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const { stop, start } = useSmoothScroll();
+
+  useEffect(() => {
+    if (!isLoaded) {
+      stop();
+    } else {
+      start();
+    }
+  }, [isLoaded, stop, start]);
 
   // Parallax scroll effects for Hero
   const heroRef = useRef(null);
@@ -165,11 +181,12 @@ const App = () => {
       setNewsletterEmail('');
       setTimeout(() => setIsSubscribed(false), 3000);
     }
-  };
-
-  return (
+  };  return (
     <>
       {/* Immersive Elements */}
+      <CustomCursor />
+      <Preloader onComplete={() => setIsLoaded(true)} />
+      {isLoaded && <PetalParticles />}
 
       {/* Fullscreen Sliding Navigation Menu */}
       <AnimatePresence>
@@ -184,12 +201,14 @@ const App = () => {
             {/* Header copy in menu */}
             <div className="flex justify-between items-center border-b border-brand-cream/10 pb-6">
               <span className="text-xl font-serif tracking-wider">FLEUR L’ATELIER</span>
-              <button 
-                onClick={() => setIsMenuOpen(false)} 
-                          className="w-12 h-12 rounded-full border border-brand-cream/20 flex items-center justify-center hover:bg-brand-cream hover:text-brand-olive transition-colors duration-500 cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <Magnetic strength={0.3}>
+                <button 
+                  onClick={() => setIsMenuOpen(false)} 
+                  className="w-12 h-12 rounded-full border border-brand-cream/20 flex items-center justify-center hover:bg-brand-cream hover:text-brand-olive transition-colors duration-500 cursor-pointer animate-none"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </Magnetic>
             </div>
 
             {/* Menu Links Grid */}
@@ -197,6 +216,7 @@ const App = () => {
               <div className="space-y-4 md:space-y-6">
                 {[
                   { label: 'The Curation', id: '#shop' },
+                  { label: 'Chronicles', id: '#chronicles' },
                   { label: 'Bespoke Builder', id: '#builder' },
                   { label: 'Philosophy', id: '#philosophy' },
                   { label: 'Subscriptions', id: '#subscriptions' },
@@ -210,7 +230,7 @@ const App = () => {
                     <a
                       href={item.id}
                       onClick={() => setIsMenuOpen(false)}
-                                      className="text-4xl md:text-6xl font-serif hover:text-brand-gold transition-colors duration-300 block py-1"
+                      className="text-4xl md:text-6xl font-serif hover:text-brand-gold transition-colors duration-300 block py-1"
                     >
                       {item.label}
                     </a>
@@ -235,8 +255,8 @@ const App = () => {
                   </p>
                 </div>
                 <div className="flex gap-4">
-                  <a href="#instagram"  className="hover:text-brand-gold transition-colors duration-300"><Instagram className="w-5 h-5" /></a>
-                  <a href="#facebook"  className="hover:text-brand-gold transition-colors duration-300"><Facebook className="w-5 h-5" /></a>
+                  <a href="#instagram" className="hover:text-brand-gold transition-colors duration-300"><Instagram className="w-5 h-5" /></a>
+                  <a href="#facebook" className="hover:text-brand-gold transition-colors duration-300"><Facebook className="w-5 h-5" /></a>
                 </div>
               </div>
             </div>
@@ -254,50 +274,57 @@ const App = () => {
       <header className="fixed top-0 left-0 right-0 z-30 bg-brand-cream/80 backdrop-blur-md border-b border-brand-olive/5 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 md:px-12 h-20 flex justify-between items-center">
           {/* Menu Trigger Left */}
-          <button 
-            onClick={() => setIsMenuOpen(true)}
-                  className="flex items-center gap-3 font-display uppercase text-xs tracking-widest font-bold text-brand-olive cursor-pointer group"
-          >
-            <div className="w-8 h-8 rounded-full border border-brand-olive/10 flex items-center justify-center group-hover:bg-brand-olive group-hover:text-brand-cream transition-colors duration-300">
-              <Menu className="w-3.5 h-3.5" />
-            </div>
-            <span className="hidden sm:inline">Menu</span>
-          </button>
+          <Magnetic strength={0.2}>
+            <button 
+              onClick={() => setIsMenuOpen(true)}
+              className="flex items-center gap-3 font-display uppercase text-xs tracking-widest font-bold text-brand-olive cursor-pointer group"
+            >
+              <div className="w-8 h-8 rounded-full border border-brand-olive/10 flex items-center justify-center group-hover:bg-brand-olive group-hover:text-brand-cream transition-colors duration-300">
+                <Menu className="w-3.5 h-3.5" />
+              </div>
+              <span className="hidden sm:inline">Menu</span>
+            </button>
+          </Magnetic>
 
           {/* Center Brand Name */}
-          <a 
-            href="#" 
-                        className="text-2xl md:text-3xl font-serif text-brand-olive tracking-widest font-light"
-          >
-            FLEUR L’ATELIER
-          </a>
+          <Magnetic strength={0.15}>
+            <a 
+              href="#" 
+              className="text-2xl md:text-3xl font-serif text-brand-olive tracking-widest font-light block"
+            >
+              FLEUR L’ATELIER
+            </a>
+          </Magnetic>
 
           {/* Cart Right */}
-          <button 
-            onClick={() => setCartCount(prev => prev + 1)}
-                  className="flex items-center gap-2 font-display uppercase text-xs tracking-widest font-bold text-brand-olive cursor-pointer relative group"
-            data-cursor-text="ADD"
-          >
-            <span className="hidden sm:inline">Vessel Bag</span>
-            <div className="w-8 h-8 rounded-full border border-brand-olive/10 flex items-center justify-center group-hover:bg-brand-olive group-hover:text-brand-cream transition-colors duration-300 relative">
-              <ShoppingBag className="w-3.5 h-3.5" />
-              {cartCount > 0 && (
-                <motion.span 
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="absolute -top-1 -right-1 w-4 h-4 bg-brand-gold text-brand-charcoal text-[9px] font-bold rounded-full flex items-center justify-center border border-brand-cream"
-                >
-                  {cartCount}
-                </motion.span>
-              )}
-            </div>
-          </button>
+          <Magnetic strength={0.2}>
+            <button 
+              onClick={() => setCartCount(prev => prev + 1)}
+              className="flex items-center gap-2 font-display uppercase text-xs tracking-widest font-bold text-brand-olive cursor-pointer relative group"
+              data-cursor-text="ADD"
+            >
+              <span className="hidden sm:inline">Vessel Bag</span>
+              <div className="w-8 h-8 rounded-full border border-brand-olive/10 flex items-center justify-center group-hover:bg-brand-olive group-hover:text-brand-cream transition-colors duration-300 relative">
+                <ShoppingBag className="w-3.5 h-3.5" />
+                {cartCount > 0 && (
+                  <motion.span 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute -top-1 -right-1 w-4 h-4 bg-brand-gold text-brand-charcoal text-[9px] font-bold rounded-full flex items-center justify-center border border-brand-cream"
+                  >
+                    {cartCount}
+                  </motion.span>
+                )}
+              </div>
+            </button>
+          </Magnetic>
         </div>
       </header>
 
       {/* HERO SECTION */}
       <section 
         ref={heroRef}
+        key={isLoaded ? 'hero-loaded' : 'hero-loading'}
         className="relative min-h-screen bg-brand-cream flex flex-col justify-between pt-32 pb-12 overflow-hidden px-6 md:px-12"
       >
         {/* Parallax elements */}
@@ -308,29 +335,33 @@ const App = () => {
 
         {/* Central Core Content */}
         <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-              {/* Left Text */}
+          {/* Left Text */}
           <div className="lg:col-span-6 space-y-8">
             <ScrollReveal variant="text-reveal-words" animateOnMount={true} className="text-5xl md:text-7xl lg:text-8xl font-serif text-brand-olive font-medium leading-none tracking-tight">
               Poetry Written In Petals
             </ScrollReveal>
-                  <ScrollReveal variant="slide-up" animateOnMount={true} delay={0.4} className="space-y-6 max-w-lg">
+            <ScrollReveal variant="slide-up" animateOnMount={true} delay={0.4} className="space-y-6 max-w-lg">
               <p className="text-brand-charcoal/70 text-sm md:text-base leading-relaxed">
                 Haute couture floristry crafted in Paris. We compose structural living artwork that elevates residential spaces, fashion editorials, and intimate gatherings.
               </p>
-                      <div className="flex gap-4">
-                <a 
-                  href="#shop" 
-                                          className="inline-flex items-center gap-2 bg-brand-olive text-brand-cream hover:bg-brand-charcoal px-6 py-3.5 rounded-full font-display uppercase text-[10px] tracking-widest font-bold transition-colors shadow-sm cursor-pointer"
-                >
-                  Explore Collection
-                  <ArrowDownRight className="w-4 h-4" />
-                </a>
-                <a 
-                  href="#builder" 
-                                          className="inline-flex items-center gap-2 border border-brand-olive/20 hover:border-brand-olive px-6 py-3.5 rounded-full font-display uppercase text-[10px] tracking-widest font-bold text-brand-olive transition-colors cursor-pointer"
-                >
-                  Bespoke Design
-                </a>
+              <div className="flex gap-4">
+                <Magnetic strength={0.2}>
+                  <a 
+                    href="#shop" 
+                    className="inline-flex items-center gap-2 bg-brand-olive text-brand-cream hover:bg-brand-charcoal px-6 py-3.5 rounded-full font-display uppercase text-[10px] tracking-widest font-bold transition-colors shadow-sm cursor-pointer"
+                  >
+                    Explore Collection
+                    <ArrowDownRight className="w-4 h-4" />
+                  </a>
+                </Magnetic>
+                <Magnetic strength={0.2}>
+                  <a 
+                    href="#builder" 
+                    className="inline-flex items-center gap-2 border border-brand-olive/20 hover:border-brand-olive px-6 py-3.5 rounded-full font-display uppercase text-[10px] tracking-widest font-bold text-brand-olive transition-colors cursor-pointer"
+                  >
+                    Bespoke Design
+                  </a>
+                </Magnetic>
               </div>
             </ScrollReveal>
           </div>
@@ -369,6 +400,9 @@ const App = () => {
           </a>
         </div>
       </section>
+
+      {/* HORIZONTAL SCROLL SHOWCASE */}
+      <HorizontalShowcase />
 
       {/* CURATOR SHOWCASE (SHOP SECTION) */}
       <section className="py-24 border-t border-brand-olive/5 bg-brand-cream" id="shop">

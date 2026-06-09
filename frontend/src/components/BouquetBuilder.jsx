@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, RotateCcw, ShoppingBag, Heart, Sparkles, ArrowRight } from 'lucide-react';
+import Magnetic from './Magnetic';
 
 // Custom animated SVG composite representing the client's current florist selections
 const BouquetGraphic = ({ mood, blooms, wrap }) => {
@@ -414,14 +415,15 @@ const BouquetBuilder = () => {
               </div>
 
               {(selectedMood || selectedBlooms.length > 0 || selectedWrap) && (
-                <button
-                  onClick={resetBuilder}
-                  
-                  className="p-2.5 rounded-full border border-brand-olive/10 hover:bg-brand-rose/25 text-brand-olive hover:border-brand-olive transition-colors duration-300 cursor-pointer"
-                  title="Reset Curation"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                </button>
+                <Magnetic strength={0.35}>
+                  <button
+                    onClick={resetBuilder}
+                    className="p-2.5 rounded-full border border-brand-olive/10 hover:bg-brand-rose/25 text-brand-olive hover:border-brand-olive transition-colors duration-300 cursor-pointer"
+                    title="Reset Curation"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                </Magnetic>
               )}
             </div>
           </div>
@@ -455,7 +457,7 @@ const BouquetBuilder = () => {
                       <button
                         key={mood.id}
                         onClick={() => selectMood(mood)}
-                        
+                        data-cursor-text="CHOOSE"
                         className={`p-5 rounded-xl border text-left flex flex-col justify-between aspect-square transition-all duration-500 cursor-pointer relative overflow-hidden group ${
                           selectedMood?.id === mood.id
                             ? 'border-brand-olive bg-brand-olive/5 shadow-md scale-[1.02]'
@@ -510,7 +512,7 @@ const BouquetBuilder = () => {
                         <button
                           key={bloom.id}
                           onClick={() => toggleBloom(bloom)}
-                          
+                          data-cursor-text={isSelected ? "REMOVE" : "ADD"}
                           className={`p-4 rounded-xl border text-left flex flex-col justify-between transition-all duration-300 cursor-pointer ${
                             isSelected
                               ? 'border-brand-olive bg-brand-olive/5 shadow-md'
@@ -543,29 +545,32 @@ const BouquetBuilder = () => {
 
                   {/* Actions */}
                   <div className="flex justify-between items-center pt-4 border-t border-brand-olive/10">
-                    <button
-                      onClick={() => {
-                                            setStep(1);
-                      }}
-                      className="text-xs font-display uppercase tracking-wider text-brand-sage hover:text-brand-olive font-bold cursor-pointer"
-                    >
-                      ← Back to Theme
-                    </button>
-                    <button
-                      disabled={selectedBlooms.length === 0}
-                      onClick={() => {
-                                            setStep(3);
-                      }}
-                      
-                      className={`flex items-center gap-1.5 px-6 py-2.5 rounded-full font-display uppercase text-[10px] tracking-wider font-bold transition-all cursor-pointer shadow-sm ${
-                        selectedBlooms.length === 0
-                          ? 'bg-brand-olive/10 text-brand-olive/40 cursor-not-allowed'
-                          : 'bg-brand-olive text-brand-cream hover:bg-brand-charcoal'
-                      }`}
-                    >
-                      Choose Wrap
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                    <Magnetic strength={0.25}>
+                      <button
+                        onClick={() => {
+                          setStep(1);
+                        }}
+                        className="text-xs font-display uppercase tracking-wider text-brand-sage hover:text-brand-olive font-bold cursor-pointer"
+                      >
+                        ← Back to Theme
+                      </button>
+                    </Magnetic>
+                    <Magnetic strength={0.2}>
+                      <button
+                        disabled={selectedBlooms.length === 0}
+                        onClick={() => {
+                          setStep(3);
+                        }}
+                        className={`flex items-center gap-1.5 px-6 py-2.5 rounded-full font-display uppercase text-[10px] tracking-wider font-bold transition-all cursor-pointer shadow-sm ${
+                          selectedBlooms.length === 0
+                            ? 'bg-brand-olive/10 text-brand-olive/40 cursor-not-allowed'
+                            : 'bg-brand-olive text-brand-cream hover:bg-brand-charcoal'
+                        }`}
+                      >
+                        Choose Wrap
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </Magnetic>
                   </div>
                 </motion.div>
               )}
@@ -595,7 +600,7 @@ const BouquetBuilder = () => {
                       <button
                         key={wrap.id}
                         onClick={() => selectWrap(wrap)}
-                        
+                        data-cursor-text="SELECT"
                         className={`w-full p-4 rounded-xl border text-left flex items-center justify-between transition-all duration-300 cursor-pointer ${
                           selectedWrap?.id === wrap.id
                             ? 'border-brand-olive bg-brand-olive/5 shadow-md'
@@ -619,14 +624,16 @@ const BouquetBuilder = () => {
 
                   {/* Actions */}
                   <div className="flex justify-between items-center pt-4 border-t border-brand-olive/10">
-                    <button
-                      onClick={() => {
-                                            setStep(2);
-                      }}
-                      className="text-xs font-display uppercase tracking-wider text-brand-sage hover:text-brand-olive font-bold cursor-pointer"
-                    >
-                      ← Back to Blooms
-                    </button>
+                    <Magnetic strength={0.25}>
+                      <button
+                        onClick={() => {
+                          setStep(2);
+                        }}
+                        className="text-xs font-display uppercase tracking-wider text-brand-sage hover:text-brand-olive font-bold cursor-pointer"
+                      >
+                        ← Back to Blooms
+                      </button>
+                    </Magnetic>
                   </div>
                 </motion.div>
               )}
@@ -691,37 +698,40 @@ const BouquetBuilder = () => {
 
                   {/* Actions */}
                   <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                    <button
-                      onClick={() => {
-                                            setStep(3);
-                      }}
-                      className="px-6 py-3 rounded-full border border-brand-olive/20 text-xs font-display font-bold uppercase tracking-wider text-brand-sage hover:text-brand-olive hover:border-brand-olive text-center cursor-pointer transition-colors duration-300"
-                    >
-                      Modify Binding
-                    </button>
+                    <Magnetic strength={0.25} className="w-full sm:w-auto">
+                      <button
+                        onClick={() => {
+                          setStep(3);
+                        }}
+                        className="w-full px-6 py-3 rounded-full border border-brand-olive/20 text-xs font-display font-bold uppercase tracking-wider text-brand-sage hover:text-brand-olive hover:border-brand-olive text-center cursor-pointer transition-colors duration-300"
+                      >
+                        Modify Binding
+                      </button>
+                    </Magnetic>
                     
-                    <button
-                      onClick={handleOrder}
-                      
-                      disabled={isOrdered}
-                      className={`flex-1 flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-display uppercase text-xs tracking-widest font-bold shadow-md cursor-pointer transition-all duration-300 ${
-                        isOrdered
-                          ? 'bg-brand-sage text-brand-cream'
-                          : 'bg-brand-olive text-brand-cream hover:bg-brand-charcoal'
-                      }`}
-                    >
-                      {isOrdered ? (
-                        <>
-                          <Heart className="w-4 h-4 fill-brand-cream" />
-                          Curator Blueprint Logged
-                        </>
-                      ) : (
-                        <>
-                          <ShoppingBag className="w-4 h-4" />
-                          Add Curation to Vessel Bag
-                        </>
-                      )}
-                    </button>
+                    <Magnetic strength={0.15} className="flex-1 w-full" style={{ display: 'block' }}>
+                      <button
+                        onClick={handleOrder}
+                        disabled={isOrdered}
+                        className={`w-full flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-display uppercase text-xs tracking-widest font-bold shadow-md cursor-pointer transition-all duration-300 ${
+                          isOrdered
+                            ? 'bg-brand-sage text-brand-cream'
+                            : 'bg-brand-olive text-brand-cream hover:bg-brand-charcoal'
+                        }`}
+                      >
+                        {isOrdered ? (
+                          <>
+                            <Heart className="w-4 h-4 fill-brand-cream" />
+                            Curator Blueprint Logged
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingBag className="w-4 h-4" />
+                            Add Curation to Vessel Bag
+                          </>
+                        )}
+                      </button>
+                    </Magnetic>
                   </div>
                 </motion.div>
               )}
