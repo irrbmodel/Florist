@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Heart, Info, ArrowRight } from 'lucide-react';
-import { useSound } from '../hooks/useSound';
 
 const ProductModal = ({ isOpen, onClose, product }) => {
-  const { playClick, playHover, playSuccess } = useSound();
   const [selectedSize, setSelectedSize] = useState('signature'); // signature, deluxe, grandeur
   const [giftNote, setGiftNote] = useState('');
   const [careOpen, setCareOpen] = useState(false);
@@ -37,7 +35,6 @@ const ProductModal = ({ isOpen, onClose, product }) => {
   const finalPrice = (product.price * sizeMultipliers[selectedSize]).toFixed(2);
 
   const handleAddToBag = () => {
-    playSuccess();
     setIsAdded(true);
     setTimeout(() => {
       setIsAdded(false);
@@ -72,11 +69,7 @@ const ProductModal = ({ isOpen, onClose, product }) => {
                 {product.category}
               </span>
               <button
-                onClick={() => {
-                  playClick();
-                  onClose();
-                }}
-                onMouseEnter={playHover}
+                onClick={onClose}
                 className="w-10 h-10 rounded-full border border-brand-olive/10 flex items-center justify-center hover:bg-brand-olive hover:text-brand-cream hover:border-brand-olive transition-colors duration-300 cursor-pointer"
                 title="Close Drawer"
               >
@@ -141,10 +134,9 @@ const ProductModal = ({ isOpen, onClose, product }) => {
                     <button
                       key={size.id}
                       onClick={() => {
-                        playClick();
                         setSelectedSize(size.id);
                       }}
-                      onMouseEnter={playHover}
+                      
                       className={`p-3 rounded-lg border text-left flex flex-col justify-between transition-all duration-300 cursor-pointer ${
                         selectedSize === size.id
                           ? 'border-brand-olive bg-brand-olive/5 shadow-sm'
@@ -182,10 +174,8 @@ const ProductModal = ({ isOpen, onClose, product }) => {
               <div className="border border-brand-olive/10 rounded-lg overflow-hidden">
                 <button
                   onClick={() => {
-                    playClick();
                     setCareOpen(!careOpen);
                   }}
-                  onMouseEnter={playHover}
                   className="w-full p-4 flex justify-between items-center bg-brand-olive/5 hover:bg-brand-olive/10 transition-colors duration-300 text-left cursor-pointer"
                 >
                   <span className="text-xs font-display font-bold uppercase tracking-wider text-brand-olive flex items-center gap-2">
@@ -239,7 +229,7 @@ const ProductModal = ({ isOpen, onClose, product }) => {
 
               <motion.button
                 onClick={handleAddToBag}
-                onMouseEnter={playHover}
+                
                 className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-display uppercase text-xs tracking-widest font-bold shadow-md cursor-pointer transition-all duration-300 ${
                   isAdded
                     ? 'bg-brand-sage text-brand-cream'

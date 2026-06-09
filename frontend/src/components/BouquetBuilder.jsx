@@ -1,3 +1,7 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Check, RotateCcw, ShoppingBag, Heart, Sparkles, ArrowRight } from 'lucide-react';
+
 // Custom animated SVG composite representing the client's current florist selections
 const BouquetGraphic = ({ mood, blooms, wrap }) => {
   const moodColor = mood?.accentColor || '#C5A880';
@@ -57,7 +61,6 @@ const BouquetGraphic = ({ mood, blooms, wrap }) => {
       {/* Stems Foliage Leaves */}
       {blooms.map((bloom, index) => {
         const targetX = [160, 200, 240][index % 3];
-        const targetY = [155, 120, 165][index % 3];
         const midX = (200 + targetX) / 2;
         
         return (
@@ -215,7 +218,6 @@ const BouquetGraphic = ({ mood, blooms, wrap }) => {
 };
 
 const BouquetBuilder = () => {
-  const { playClick, playHover, playSuccess } = useSound();
   const [step, setStep] = useState(1); // 1: Mood, 2: Blooms, 3: Wrap, 4: Summary
 
   const [selectedMood, setSelectedMood] = useState(null);
@@ -273,7 +275,6 @@ const BouquetBuilder = () => {
   ];
 
   const toggleBloom = (bloom) => {
-    playClick();
     if (selectedBlooms.find((b) => b.id === bloom.id)) {
       setSelectedBlooms(selectedBlooms.filter((b) => b.id !== bloom.id));
     } else {
@@ -286,13 +287,11 @@ const BouquetBuilder = () => {
   };
 
   const selectMood = (mood) => {
-    playClick();
     setSelectedMood(mood);
     setStep(2);
   };
 
   const selectWrap = (wrap) => {
-    playClick();
     setSelectedWrap(wrap);
     setStep(4);
   };
@@ -306,7 +305,6 @@ const BouquetBuilder = () => {
   };
 
   const resetBuilder = () => {
-    playClick();
     setStep(1);
     setSelectedMood(null);
     setSelectedBlooms([]);
@@ -315,7 +313,6 @@ const BouquetBuilder = () => {
   };
 
   const handleOrder = () => {
-    playSuccess();
     setIsOrdered(true);
   };
 
@@ -419,7 +416,7 @@ const BouquetBuilder = () => {
               {(selectedMood || selectedBlooms.length > 0 || selectedWrap) && (
                 <button
                   onClick={resetBuilder}
-                  onMouseEnter={playHover}
+                  
                   className="p-2.5 rounded-full border border-brand-olive/10 hover:bg-brand-rose/25 text-brand-olive hover:border-brand-olive transition-colors duration-300 cursor-pointer"
                   title="Reset Curation"
                 >
@@ -458,7 +455,7 @@ const BouquetBuilder = () => {
                       <button
                         key={mood.id}
                         onClick={() => selectMood(mood)}
-                        onMouseEnter={playHover}
+                        
                         className={`p-5 rounded-xl border text-left flex flex-col justify-between aspect-square transition-all duration-500 cursor-pointer relative overflow-hidden group ${
                           selectedMood?.id === mood.id
                             ? 'border-brand-olive bg-brand-olive/5 shadow-md scale-[1.02]'
@@ -513,7 +510,7 @@ const BouquetBuilder = () => {
                         <button
                           key={bloom.id}
                           onClick={() => toggleBloom(bloom)}
-                          onMouseEnter={playHover}
+                          
                           className={`p-4 rounded-xl border text-left flex flex-col justify-between transition-all duration-300 cursor-pointer ${
                             isSelected
                               ? 'border-brand-olive bg-brand-olive/5 shadow-md'
@@ -548,8 +545,7 @@ const BouquetBuilder = () => {
                   <div className="flex justify-between items-center pt-4 border-t border-brand-olive/10">
                     <button
                       onClick={() => {
-                        playClick();
-                        setStep(1);
+                                            setStep(1);
                       }}
                       className="text-xs font-display uppercase tracking-wider text-brand-sage hover:text-brand-olive font-bold cursor-pointer"
                     >
@@ -558,10 +554,9 @@ const BouquetBuilder = () => {
                     <button
                       disabled={selectedBlooms.length === 0}
                       onClick={() => {
-                        playClick();
-                        setStep(3);
+                                            setStep(3);
                       }}
-                      onMouseEnter={playHover}
+                      
                       className={`flex items-center gap-1.5 px-6 py-2.5 rounded-full font-display uppercase text-[10px] tracking-wider font-bold transition-all cursor-pointer shadow-sm ${
                         selectedBlooms.length === 0
                           ? 'bg-brand-olive/10 text-brand-olive/40 cursor-not-allowed'
@@ -600,7 +595,7 @@ const BouquetBuilder = () => {
                       <button
                         key={wrap.id}
                         onClick={() => selectWrap(wrap)}
-                        onMouseEnter={playHover}
+                        
                         className={`w-full p-4 rounded-xl border text-left flex items-center justify-between transition-all duration-300 cursor-pointer ${
                           selectedWrap?.id === wrap.id
                             ? 'border-brand-olive bg-brand-olive/5 shadow-md'
@@ -626,8 +621,7 @@ const BouquetBuilder = () => {
                   <div className="flex justify-between items-center pt-4 border-t border-brand-olive/10">
                     <button
                       onClick={() => {
-                        playClick();
-                        setStep(2);
+                                            setStep(2);
                       }}
                       className="text-xs font-display uppercase tracking-wider text-brand-sage hover:text-brand-olive font-bold cursor-pointer"
                     >
@@ -699,8 +693,7 @@ const BouquetBuilder = () => {
                   <div className="flex flex-col sm:flex-row gap-3 pt-2">
                     <button
                       onClick={() => {
-                        playClick();
-                        setStep(3);
+                                            setStep(3);
                       }}
                       className="px-6 py-3 rounded-full border border-brand-olive/20 text-xs font-display font-bold uppercase tracking-wider text-brand-sage hover:text-brand-olive hover:border-brand-olive text-center cursor-pointer transition-colors duration-300"
                     >
@@ -709,7 +702,7 @@ const BouquetBuilder = () => {
                     
                     <button
                       onClick={handleOrder}
-                      onMouseEnter={playHover}
+                      
                       disabled={isOrdered}
                       className={`flex-1 flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-display uppercase text-xs tracking-widest font-bold shadow-md cursor-pointer transition-all duration-300 ${
                         isOrdered

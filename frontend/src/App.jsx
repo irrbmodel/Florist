@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { 
   ShoppingBag, Menu, X, ArrowDownRight, ArrowUpRight, 
@@ -37,13 +37,12 @@ const Facebook = ({ className = 'w-5 h-5' }) => (
 
 // Custom component imports
 import CustomCursor from './components/CustomCursor';
-import SoundController from './components/SoundController';
+
 import ScrollReveal from './components/ScrollReveal';
 import ProductModal from './components/ProductModal';
 import BouquetBuilder from './components/BouquetBuilder';
 
-// Sound hooks
-import { useSound } from './hooks/useSound';
+
 
 // Curated Unsplash images for products & sections
 const PRODUCTS = [
@@ -130,7 +129,6 @@ const GALLERY_SLIDES = [
 ];
 
 const App = () => {
-  const { playClick, playHover } = useSound();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState(null);
@@ -157,7 +155,6 @@ const App = () => {
     : PRODUCTS.filter(p => p.category === selectedCategory);
 
   const openProductDetails = (product) => {
-    playClick();
     setActiveProduct(product);
     setIsModalOpen(true);
   };
@@ -165,7 +162,6 @@ const App = () => {
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
     if (newsletterEmail.trim()) {
-      playClick();
       setIsSubscribed(true);
       setNewsletterEmail('');
       setTimeout(() => setIsSubscribed(false), 3000);
@@ -176,7 +172,6 @@ const App = () => {
     <>
       {/* Immersive Elements */}
       <CustomCursor />
-      <SoundController />
 
       {/* Fullscreen Sliding Navigation Menu */}
       <AnimatePresence>
@@ -192,9 +187,8 @@ const App = () => {
             <div className="flex justify-between items-center border-b border-brand-cream/10 pb-6">
               <span className="text-xl font-serif tracking-wider">FLEUR L’ATELIER</span>
               <button 
-                onClick={() => { playClick(); setIsMenuOpen(false); }} 
-                onMouseEnter={playHover}
-                className="w-12 h-12 rounded-full border border-brand-cream/20 flex items-center justify-center hover:bg-brand-cream hover:text-brand-olive transition-colors duration-500 cursor-pointer"
+                onClick={() => setIsMenuOpen(false)} 
+                          className="w-12 h-12 rounded-full border border-brand-cream/20 flex items-center justify-center hover:bg-brand-cream hover:text-brand-olive transition-colors duration-500 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -217,9 +211,8 @@ const App = () => {
                   >
                     <a
                       href={item.id}
-                      onClick={() => { playClick(); setIsMenuOpen(false); }}
-                      onMouseEnter={playHover}
-                      className="text-4xl md:text-6xl font-serif hover:text-brand-gold transition-colors duration-300 block py-1"
+                      onClick={() => setIsMenuOpen(false)}
+                                      className="text-4xl md:text-6xl font-serif hover:text-brand-gold transition-colors duration-300 block py-1"
                     >
                       {item.label}
                     </a>
@@ -244,8 +237,8 @@ const App = () => {
                   </p>
                 </div>
                 <div className="flex gap-4">
-                  <a href="#instagram" onMouseEnter={playHover} className="hover:text-brand-gold transition-colors duration-300"><Instagram className="w-5 h-5" /></a>
-                  <a href="#facebook" onMouseEnter={playHover} className="hover:text-brand-gold transition-colors duration-300"><Facebook className="w-5 h-5" /></a>
+                  <a href="#instagram"  className="hover:text-brand-gold transition-colors duration-300"><Instagram className="w-5 h-5" /></a>
+                  <a href="#facebook"  className="hover:text-brand-gold transition-colors duration-300"><Facebook className="w-5 h-5" /></a>
                 </div>
               </div>
             </div>
@@ -264,9 +257,8 @@ const App = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-12 h-20 flex justify-between items-center">
           {/* Menu Trigger Left */}
           <button 
-            onClick={() => { playClick(); setIsMenuOpen(true); }}
-            onMouseEnter={playHover}
-            className="flex items-center gap-3 font-display uppercase text-xs tracking-widest font-bold text-brand-olive cursor-pointer group"
+            onClick={() => setIsMenuOpen(true)}
+                  className="flex items-center gap-3 font-display uppercase text-xs tracking-widest font-bold text-brand-olive cursor-pointer group"
           >
             <div className="w-8 h-8 rounded-full border border-brand-olive/10 flex items-center justify-center group-hover:bg-brand-olive group-hover:text-brand-cream transition-colors duration-300">
               <Menu className="w-3.5 h-3.5" />
@@ -277,18 +269,15 @@ const App = () => {
           {/* Center Brand Name */}
           <a 
             href="#" 
-            onClick={playClick}
-            onMouseEnter={playHover}
-            className="text-2xl md:text-3xl font-serif text-brand-olive tracking-widest font-light"
+                        className="text-2xl md:text-3xl font-serif text-brand-olive tracking-widest font-light"
           >
             FLEUR L’ATELIER
           </a>
 
           {/* Cart Right */}
           <button 
-            onClick={() => { playClick(); setCartCount(prev => prev + 1); }}
-            onMouseEnter={playHover}
-            className="flex items-center gap-2 font-display uppercase text-xs tracking-widest font-bold text-brand-olive cursor-pointer relative group"
+            onClick={() => setCartCount(prev => prev + 1)}
+                  className="flex items-center gap-2 font-display uppercase text-xs tracking-widest font-bold text-brand-olive cursor-pointer relative group"
             data-cursor-text="ADD"
           >
             <span className="hidden sm:inline">Vessel Bag</span>
@@ -321,33 +310,26 @@ const App = () => {
 
         {/* Central Core Content */}
         <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-          
-          {/* Left Text */}
+              {/* Left Text */}
           <div className="lg:col-span-6 space-y-8">
             <ScrollReveal variant="text-reveal-words" className="text-5xl md:text-7xl lg:text-8xl font-serif text-brand-olive font-medium leading-none tracking-tight">
               Poetry Written In Petals
             </ScrollReveal>
-            
-            <ScrollReveal variant="slide-up" delay={0.4} className="space-y-6 max-w-lg">
+                  <ScrollReveal variant="slide-up" delay={0.4} className="space-y-6 max-w-lg">
               <p className="text-brand-charcoal/70 text-sm md:text-base leading-relaxed">
                 Haute couture floristry crafted in Paris. We compose structural living artwork that elevates residential spaces, fashion editorials, and intimate gatherings.
               </p>
-              
-              <div className="flex gap-4">
+                      <div className="flex gap-4">
                 <a 
                   href="#shop" 
-                  onClick={playClick}
-                  onMouseEnter={playHover}
-                  className="inline-flex items-center gap-2 bg-brand-olive text-brand-cream hover:bg-brand-charcoal px-6 py-3.5 rounded-full font-display uppercase text-[10px] tracking-widest font-bold transition-colors shadow-sm cursor-pointer"
+                                          className="inline-flex items-center gap-2 bg-brand-olive text-brand-cream hover:bg-brand-charcoal px-6 py-3.5 rounded-full font-display uppercase text-[10px] tracking-widest font-bold transition-colors shadow-sm cursor-pointer"
                 >
                   Explore Collection
                   <ArrowDownRight className="w-4 h-4" />
                 </a>
                 <a 
                   href="#builder" 
-                  onClick={playClick}
-                  onMouseEnter={playHover}
-                  className="inline-flex items-center gap-2 border border-brand-olive/20 hover:border-brand-olive px-6 py-3.5 rounded-full font-display uppercase text-[10px] tracking-widest font-bold text-brand-olive transition-colors cursor-pointer"
+                                          className="inline-flex items-center gap-2 border border-brand-olive/20 hover:border-brand-olive px-6 py-3.5 rounded-full font-display uppercase text-[10px] tracking-widest font-bold text-brand-olive transition-colors cursor-pointer"
                 >
                   Bespoke Design
                 </a>
@@ -384,7 +366,7 @@ const App = () => {
         {/* Bottom Bar */}
         <div className="max-w-7xl mx-auto w-full flex justify-between items-center border-t border-brand-olive/10 pt-6 mt-12 relative z-10 text-[10px] font-display uppercase tracking-widest text-brand-sage font-bold">
           <span>Paris — Milan — New York</span>
-          <a href="#shop" onClick={playClick} onMouseEnter={playHover} className="flex items-center gap-1 hover:text-brand-olive transition-colors cursor-pointer">
+          <a href="#shop"   className="flex items-center gap-1 hover:text-brand-olive transition-colors cursor-pointer">
             Scroll to curations <ArrowDownRight className="w-3.5 h-3.5" />
           </a>
         </div>
@@ -393,8 +375,7 @@ const App = () => {
       {/* CURATOR SHOWCASE (SHOP SECTION) */}
       <section className="py-24 border-t border-brand-olive/5 bg-brand-cream" id="shop">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-          
-          {/* Header Row */}
+              {/* Header Row */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
             <div className="space-y-4">
               <span className="text-xs font-display uppercase tracking-widest text-brand-sage font-bold flex items-center gap-2">
@@ -405,15 +386,13 @@ const App = () => {
                 Seasonal Botanical Curations
               </h2>
             </div>
-            
-            {/* Filter Tabs */}
+                  {/* Filter Tabs */}
             <div className="flex flex-wrap gap-2 pt-2 border-b border-brand-olive/5 w-full md:w-auto">
               {categories.map((category) => (
                 <button
                   key={category}
-                  onClick={() => { playClick(); setSelectedCategory(category); }}
-                  onMouseEnter={playHover}
-                  className={`px-4 py-2 text-xs font-display uppercase tracking-wider font-bold rounded-full transition-all duration-300 cursor-pointer ${
+                  onClick={() => setSelectedCategory(category)}
+                              className={`px-4 py-2 text-xs font-display uppercase tracking-wider font-bold rounded-full transition-all duration-300 cursor-pointer ${
                     selectedCategory === category
                       ? 'bg-brand-olive text-brand-cream shadow-sm'
                       : 'text-brand-sage hover:text-brand-olive hover:bg-brand-rose/20'
@@ -446,8 +425,7 @@ const App = () => {
                   {/* Image Container with custom zoom */}
                   <div 
                     onClick={() => openProductDetails(product)}
-                    onMouseEnter={playHover}
-                    className="aspect-3/4 w-full rounded-xl overflow-hidden border border-brand-olive/5 shadow-sm relative group cursor-pointer"
+                                  className="aspect-3/4 w-full rounded-xl overflow-hidden border border-brand-olive/5 shadow-sm relative group cursor-pointer"
                     data-cursor-text="VIEW"
                   >
                     <img
@@ -493,8 +471,7 @@ const App = () => {
 
         <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center">
-            
-            {/* Left Narrative with word reveal */}
+                  {/* Left Narrative with word reveal */}
             <div className="lg:col-span-7 space-y-8">
               <span className="text-xs font-display uppercase tracking-widest text-brand-gold font-bold">
                 Our Living Creed
@@ -502,8 +479,7 @@ const App = () => {
               <ScrollReveal variant="text-reveal-words" className="text-3xl md:text-5xl font-serif leading-tight font-medium text-brand-rose">
                 We believe flowers are not mere decorations but dynamic, fleeting dialogues between human emotion and the seasonal architecture of earth.
               </ScrollReveal>
-              
-              <ScrollReveal variant="slide-up" delay={0.2} className="space-y-6 text-brand-cream/80 text-sm md:text-base leading-relaxed font-sans max-w-xl">
+                      <ScrollReveal variant="slide-up" delay={0.2} className="space-y-6 text-brand-cream/80 text-sm md:text-base leading-relaxed font-sans max-w-xl">
                 <p>
                   Sourcing strictly from organic flower farms in Provence, the Loire Valley, and family greenhouses, we honor the natural growth contours of each bloom.
                 </p>
@@ -512,9 +488,7 @@ const App = () => {
                 </p>
                 <a 
                   href="#instagram"
-                  onMouseEnter={playHover}
-                  onClick={playClick}
-                  className="inline-flex items-center gap-2 text-brand-gold hover:text-brand-cream border-b border-brand-gold/30 hover:border-brand-cream pb-1 text-xs font-display uppercase tracking-wider font-bold transition-all cursor-pointer"
+                                          className="inline-flex items-center gap-2 text-brand-gold hover:text-brand-cream border-b border-brand-gold/30 hover:border-brand-cream pb-1 text-xs font-display uppercase tracking-wider font-bold transition-all cursor-pointer"
                 >
                   Inside the Greenhouse Atelier
                   <ArrowUpRight className="w-3.5 h-3.5" />
@@ -551,8 +525,7 @@ const App = () => {
       {/* MEMBERSHIPS / SUBSCRIPTION SECTION */}
       <section className="py-24 bg-brand-cream" id="subscriptions">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-          
-          {/* Section Headers */}
+              {/* Section Headers */}
           <div className="text-center space-y-4 mb-16">
             <span className="text-xs font-display uppercase tracking-widest text-brand-sage font-bold">
               Sublime Rituals
@@ -609,8 +582,7 @@ const App = () => {
                     Atelier Choice
                   </span>
                 )}
-                
-                <div className="space-y-6">
+                          <div className="space-y-6">
                   <div>
                     <h3 className="text-2xl font-serif text-brand-olive">{plan.title}</h3>
                     <p className="text-[11px] text-brand-sage font-display uppercase font-bold mt-1 tracking-wider">{plan.tier}</p>
@@ -635,9 +607,8 @@ const App = () => {
 
                 <div className="pt-8">
                   <button
-                    onClick={() => { playClick(); setCartCount(prev => prev + 1); }}
-                    onMouseEnter={playHover}
-                    className={`w-full py-3 rounded-full font-display uppercase text-[10px] tracking-widest font-bold shadow-sm transition-colors duration-300 cursor-pointer ${
+                    onClick={() => setCartCount(prev => prev + 1)}
+                                  className={`w-full py-3 rounded-full font-display uppercase text-[10px] tracking-widest font-bold shadow-sm transition-colors duration-300 cursor-pointer ${
                       plan.popular 
                         ? 'bg-brand-olive text-brand-cream hover:bg-brand-charcoal' 
                         : 'border border-brand-olive/20 text-brand-olive hover:bg-brand-rose/20'
@@ -705,16 +676,13 @@ const App = () => {
       {/* EDITORIAL CONTACT & FOOTER */}
       <footer className="bg-brand-olive text-brand-cream pt-24 pb-12 relative overflow-hidden" id="contact">
         <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10 space-y-16">
-          
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
-            
-            {/* Left: Newsletter signup */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
+                  {/* Left: Newsletter signup */}
             <div className="lg:col-span-6 space-y-6">
               <h3 className="text-3xl md:text-4xl font-serif text-brand-rose leading-tight font-medium">
                 Subscribe to Seasonal Curations, Floristry Narratives, & Secret Atelier Launches.
               </h3>
-              
-              <form onSubmit={handleNewsletterSubmit} className="space-y-4 max-w-md relative">
+                      <form onSubmit={handleNewsletterSubmit} className="space-y-4 max-w-md relative">
                 <div className="relative">
                   <input
                     type="email"
@@ -726,14 +694,12 @@ const App = () => {
                   />
                   <button 
                     type="submit" 
-                    onMouseEnter={playHover}
-                    className="absolute right-0 top-3 text-brand-gold hover:text-brand-cream text-xs font-display uppercase font-bold tracking-widest transition-colors cursor-pointer"
+                                  className="absolute right-0 top-3 text-brand-gold hover:text-brand-cream text-xs font-display uppercase font-bold tracking-widest transition-colors cursor-pointer"
                   >
                     Join
                   </button>
                 </div>
-                
-                <AnimatePresence>
+                          <AnimatePresence>
                   {isSubscribed && (
                     <motion.p 
                       initial={{ opacity: 0, y: 10 }}
@@ -750,8 +716,7 @@ const App = () => {
 
             {/* Right: Contact & Studio Info Links */}
             <div className="lg:col-span-6 grid grid-cols-2 gap-8">
-              
-              <div className="space-y-4 text-xs font-sans">
+                      <div className="space-y-4 text-xs font-sans">
                 <span className="text-[10px] font-display uppercase tracking-widest text-brand-gold font-bold block mb-1">
                   Atelier Hours
                 </span>
@@ -771,17 +736,17 @@ const App = () => {
                 </span>
                 <ul className="space-y-2">
                   <li>
-                    <a href="#instagram" onMouseEnter={playHover} className="hover:text-brand-gold flex items-center gap-1 transition-colors duration-300">
+                    <a href="#instagram"  className="hover:text-brand-gold flex items-center gap-1 transition-colors duration-300">
                       Instagram <ArrowUpRight className="w-3 h-3" />
                     </a>
                   </li>
                   <li>
-                    <a href="#pinterest" onMouseEnter={playHover} className="hover:text-brand-gold flex items-center gap-1 transition-colors duration-300">
+                    <a href="#pinterest"  className="hover:text-brand-gold flex items-center gap-1 transition-colors duration-300">
                       Pinterest <ArrowUpRight className="w-3 h-3" />
                     </a>
                   </li>
                   <li>
-                    <a href="#contact-form" onMouseEnter={playHover} className="hover:text-brand-gold flex items-center gap-1 transition-colors duration-300">
+                    <a href="#contact-form"  className="hover:text-brand-gold flex items-center gap-1 transition-colors duration-300">
                       Contact Studio <ArrowUpRight className="w-3 h-3" />
                     </a>
                   </li>
@@ -798,8 +763,8 @@ const App = () => {
               © 2026 Fleur L'Atelier | Created in Haute Couture Design.
             </span>
             <div className="flex gap-6 text-xs text-brand-cream/60">
-              <a href="#privacy" onMouseEnter={playHover} className="hover:text-brand-gold transition-colors duration-300">Privacy Policy</a>
-              <a href="#terms" onMouseEnter={playHover} className="hover:text-brand-gold transition-colors duration-300">Terms of Service</a>
+              <a href="#privacy"  className="hover:text-brand-gold transition-colors duration-300">Privacy Policy</a>
+              <a href="#terms"  className="hover:text-brand-gold transition-colors duration-300">Terms of Service</a>
             </div>
           </div>
 

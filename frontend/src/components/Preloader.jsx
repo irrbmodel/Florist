@@ -33,7 +33,6 @@ export const Preloader = ({ onComplete }) => {
       } else {
         setTimeout(() => {
           setIsDone(true);
-          playOpenChord();
           setTimeout(() => {
             onComplete();
           }, 900); // Allow clip-path exit transitions to finish
@@ -48,38 +47,6 @@ export const Preloader = ({ onComplete }) => {
     };
   }, [onComplete]);
 
-  // Synthesizes a gorgeous, pure, major 7th opening chime chord
-  const playOpenChord = () => {
-    try {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) return;
-      const ctx = new AudioContextClass();
-      
-      const playSine = (freq, delay, volume, duration) => {
-        const osc = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        osc.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
-        gainNode.gain.setValueAtTime(0, ctx.currentTime + delay);
-        gainNode.gain.linearRampToValueAtTime(volume, ctx.currentTime + delay + 0.05);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
-        osc.start(ctx.currentTime + delay);
-        osc.stop(ctx.currentTime + delay + duration + 0.1);
-      };
-
-      const now = 0;
-      // Majestic major 7th chord: C4, G4, C5, E5, B5
-      playSine(261.63, now, 0.03, 1.8);
-      playSine(392.00, now + 0.08, 0.02, 1.6);
-      playSine(523.25, now + 0.16, 0.02, 1.4);
-      playSine(659.25, now + 0.24, 0.02, 1.2);
-      playSine(987.77, now + 0.32, 0.015, 1.0);
-    } catch (e) {
-      console.warn("Chime play error: ", e);
-    }
-  };
 
   return (
     <AnimatePresence>
