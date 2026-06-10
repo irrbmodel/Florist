@@ -21,8 +21,8 @@ const BouquetGraphic = ({ mood, blooms, wrap }) => {
       {blooms.length > 0 && (
         <g opacity="0.85">
           {blooms.map((bloom, index) => {
-            const targetX = [160, 200, 240][index % 3];
-            const targetY = [155, 120, 165][index % 3];
+            const targetX = [200, 160, 240][index % 3];
+            const targetY = [120, 155, 165][index % 3];
             return (
               <motion.path
                 key={`stem-${bloom.id}`}
@@ -61,7 +61,7 @@ const BouquetGraphic = ({ mood, blooms, wrap }) => {
 
       {/* Stems Foliage Leaves */}
       {blooms.map((bloom, index) => {
-        const targetX = [160, 200, 240][index % 3];
+        const targetX = [200, 160, 240][index % 3];
         const midX = (200 + targetX) / 2;
         
         return (
@@ -86,8 +86,8 @@ const BouquetGraphic = ({ mood, blooms, wrap }) => {
 
       {/* Flowers Layer */}
       {blooms.map((bloom, index) => {
-        const targetX = [160, 200, 240][index % 3];
-        const targetY = [155, 120, 165][index % 3];
+        const targetX = [200, 160, 240][index % 3];
+        const targetY = [120, 155, 165][index % 3];
 
         return (
           <g key={`bloom-graphic-${bloom.id}-${index}`} transform={`translate(${targetX}, ${targetY})`}>
@@ -95,6 +95,7 @@ const BouquetGraphic = ({ mood, blooms, wrap }) => {
               initial={{ scale: 0, rotate: -45 }}
               animate={{ scale: 1.05, rotate: 0 }}
               transition={{ type: 'spring', damping: 14, stiffness: 120 }}
+              style={{ originX: 0, originY: 0 }}
             >
               {bloom.id === 'rose' && (
                 <g>
