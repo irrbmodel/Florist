@@ -90,78 +90,78 @@ const BouquetGraphic = ({ mood, blooms, wrap }) => {
         const targetY = [155, 120, 165][index % 3];
 
         return (
-          <motion.g
-            key={`bloom-graphic-${bloom.id}-${index}`}
-            transform={`translate(${targetX}, ${targetY})`}
-            initial={{ scale: 0, rotate: -45 }}
-            animate={{ scale: 1.05, rotate: 0 }}
-            transition={{ type: 'spring', damping: 14, stiffness: 120 }}
-          >
-            {bloom.id === 'rose' && (
-              <g>
-                <circle cx="0" cy="0" r="30" fill="#EFAAA4" />
-                <circle cx="-6" cy="-6" r="18" fill="#F4BDB7" />
-                <circle cx="6" cy="-6" r="18" fill="#F4BDB7" />
-                <circle cx="0" cy="8" r="20" fill="#EE9C95" />
-                <circle cx="-10" cy="0" r="16" fill="#F4BDB7" />
-                <circle cx="12" cy="0" r="16" fill="#F4BDB7" />
-                <circle cx="0" cy="0" r="11" fill="#D67B73" />
-                <circle cx="0" cy="0" r="5" fill="#BD5F57" />
-              </g>
-            )}
-            {bloom.id === 'tulip' && (
-              <g transform="translate(0, -5)">
-                <path d="M-20,18 C-20,-12 0,-25 0,-25 C0,-25 20,-12 20,18 C20,32 10,36 0,36 C-10,36 -20,32 -20,18 Z" fill="#E26D74" />
-                <path d="M-12,18 C-12,-3 0,-18 0,-18 C0,-18 12,-3 12,18 C12,28 6,31 0,31 C-6,31 -12,28 -12,18 Z" fill="#EE8B91" />
-                <path d="M-5,18 C-5,3 0,-12 0,-12 C0,-12 5,3 5,18 C5,22 2.5,25 0,25 C-2.5,25 -5,22 -5,18 Z" fill="#BD4E55" />
-              </g>
-            )}
-            {bloom.id === 'ranunculus' && (
-              <g>
-                <circle cx="0" cy="0" r="28" fill="#EFA24C" />
-                <circle cx="0" cy="0" r="23" fill="#F3B367" />
-                <circle cx="0" cy="0" r="18" fill="#F6C582" />
-                <circle cx="0" cy="0" r="13" fill="#EFA24C" />
-                <circle cx="0" cy="0" r="8" fill="#D2842B" />
-                <circle cx="0" cy="0" r="4" fill="#9F5B12" />
-              </g>
-            )}
-            {bloom.id === 'peony' && (
-              <g>
-                <circle cx="0" cy="0" r="36" fill="#F5C0D3" />
-                <path d="M-22,-22 Q-36,0 -22,22 Q0,36 22,22 Q36,0 22,-22 Q0,-36 -22,-22 Z" fill="#F7CAD9" />
-                <circle cx="0" cy="0" r="24" fill="#F3A7C3" />
-                <circle cx="0" cy="0" r="16" fill="#EC81AA" />
-                <circle cx="0" cy="0" r="9" fill="#DA5387" />
-                <circle cx="0" cy="0" r="3" fill="#B72D62" />
-              </g>
-            )}
-            {bloom.id === 'hydrangea' && (
-              <g>
-                <circle cx="0" cy="0" r="38" fill="#90BFE6" opacity="0.85" />
-                <circle cx="-14" cy="-14" r="11" fill="#B1D4F1" />
-                <circle cx="14" cy="-14" r="11" fill="#B1D4F1" />
-                <circle cx="-14" cy="14" r="11" fill="#B1D4F1" />
-                <circle cx="14" cy="14" r="11" fill="#B1D4F1" />
-                <circle cx="0" cy="-20" r="9" fill="#CDE3F7" />
-                <circle cx="0" cy="20" r="9" fill="#CDE3F7" />
-                <circle cx="-20" cy="0" r="9" fill="#CDE3F7" />
-                <circle cx="20" cy="0" r="9" fill="#CDE3F7" />
-                <circle cx="0" cy="0" r="13" fill="#B1D4F1" />
-                <circle cx="0" cy="0" r="3" fill="#FDFBF7" />
-              </g>
-            )}
-            {bloom.id === 'eucalyptus' && (
-              <g>
-                <line x1="0" y1="-25" x2="0" y2="25" stroke="#7C8D78" strokeWidth="3.5" />
-                <ellipse cx="-10" cy="-12" rx="12" ry="8" fill="#9CB297" />
-                <ellipse cx="10" cy="-12" rx="12" ry="8" fill="#9CB297" />
-                <ellipse cx="-12" cy="4" rx="14" ry="9" fill="#8FA58A" />
-                <ellipse cx="12" cy="4" rx="14" ry="9" fill="#8FA58A" />
-                <ellipse cx="0" cy="-22" rx="7" ry="5" fill="#AFC4AB" />
-              </g>
-            )}
-          </motion.g>
+          <g key={`bloom-graphic-${bloom.id}-${index}`} transform={`translate(${targetX}, ${targetY})`}>
+            <motion.g
+              initial={{ scale: 0, rotate: -45 }}
+              animate={{ scale: 1.05, rotate: 0 }}
+              transition={{ type: 'spring', damping: 14, stiffness: 120 }}
+            >
+              {bloom.id === 'rose' && (
+                <g>
+                  <circle cx="0" cy="0" r="30" fill="#EFAAA4" />
+                  <circle cx="-6" cy="-6" r="18" fill="#F4BDB7" />
+                  <circle cx="6" cy="-6" r="18" fill="#F4BDB7" />
+                  <circle cx="0" cy="8" r="20" fill="#EE9C95" />
+                  <circle cx="-10" cy="0" r="16" fill="#F4BDB7" />
+                  <circle cx="12" cy="0" r="16" fill="#F4BDB7" />
+                  <circle cx="0" cy="0" r="11" fill="#D67B73" />
+                  <circle cx="0" cy="0" r="5" fill="#BD5F57" />
+                </g>
+              )}
+              {bloom.id === 'tulip' && (
+                <g transform="translate(0, -5)">
+                  <path d="M-20,18 C-20,-12 0,-25 0,-25 C0,-25 20,-12 20,18 C20,32 10,36 0,36 C-10,36 -20,32 -20,18 Z" fill="#E26D74" />
+                  <path d="M-12,18 C-12,-3 0,-18 0,-18 C0,-18 12,-3 12,18 C12,28 6,31 0,31 C-6,31 -12,28 -12,18 Z" fill="#EE8B91" />
+                  <path d="M-5,18 C-5,3 0,-12 0,-12 C0,-12 5,3 5,18 C5,22 2.5,25 0,25 C-2.5,25 -5,22 -5,18 Z" fill="#BD4E55" />
+                </g>
+              )}
+              {bloom.id === 'ranunculus' && (
+                <g>
+                  <circle cx="0" cy="0" r="28" fill="#EFA24C" />
+                  <circle cx="0" cy="0" r="23" fill="#F3B367" />
+                  <circle cx="0" cy="0" r="18" fill="#F6C582" />
+                  <circle cx="0" cy="0" r="13" fill="#EFA24C" />
+                  <circle cx="0" cy="0" r="8" fill="#D2842B" />
+                  <circle cx="0" cy="0" r="4" fill="#9F5B12" />
+                </g>
+              )}
+              {bloom.id === 'peony' && (
+                <g>
+                  <circle cx="0" cy="0" r="36" fill="#F5C0D3" />
+                  <path d="M-22,-22 Q-36,0 -22,22 Q0,36 22,22 Q36,0 22,-22 Q0,-36 -22,-22 Z" fill="#F7CAD9" />
+                  <circle cx="0" cy="0" r="24" fill="#F3A7C3" />
+                  <circle cx="0" cy="0" r="16" fill="#EC81AA" />
+                  <circle cx="0" cy="0" r="9" fill="#DA5387" />
+                  <circle cx="0" cy="0" r="3" fill="#B72D62" />
+                </g>
+              )}
+              {bloom.id === 'hydrangea' && (
+                <g>
+                  <circle cx="0" cy="0" r="38" fill="#90BFE6" opacity="0.85" />
+                  <circle cx="-14" cy="-14" r="11" fill="#B1D4F1" />
+                  <circle cx="14" cy="-14" r="11" fill="#B1D4F1" />
+                  <circle cx="-14" cy="14" r="11" fill="#B1D4F1" />
+                  <circle cx="14" cy="14" r="11" fill="#B1D4F1" />
+                  <circle cx="0" cy="-20" r="9" fill="#CDE3F7" />
+                  <circle cx="0" cy="20" r="9" fill="#CDE3F7" />
+                  <circle cx="-20" cy="0" r="9" fill="#CDE3F7" />
+                  <circle cx="20" cy="0" r="9" fill="#CDE3F7" />
+                  <circle cx="0" cy="0" r="13" fill="#B1D4F1" />
+                  <circle cx="0" cy="0" r="3" fill="#FDFBF7" />
+                </g>
+              )}
+              {bloom.id === 'eucalyptus' && (
+                <g>
+                  <line x1="0" y1="-25" x2="0" y2="25" stroke="#7C8D78" strokeWidth="3.5" />
+                  <ellipse cx="-10" cy="-12" rx="12" ry="8" fill="#9CB297" />
+                  <ellipse cx="10" cy="-12" rx="12" ry="8" fill="#9CB297" />
+                  <ellipse cx="-12" cy="4" rx="14" ry="9" fill="#8FA58A" />
+                  <ellipse cx="12" cy="4" rx="14" ry="9" fill="#8FA58A" />
+                  <ellipse cx="0" cy="-22" rx="7" ry="5" fill="#AFC4AB" />
+                </g>
+              )}
+            </motion.g>
+          </g>
         );
       })}
 
